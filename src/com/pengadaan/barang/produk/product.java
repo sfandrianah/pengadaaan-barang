@@ -12,7 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class produk extends javax.swing.JFrame {
+public class product extends javax.swing.JFrame {
 
     private Integer row;
     private PengadaanBarang aplikasiInventory = new PengadaanBarang();
@@ -21,7 +21,7 @@ public class produk extends javax.swing.JFrame {
     private TableColumn column;   
     private String e,r,i,k,a;
     
-    public produk() {
+    public product() {
         initComponents();
         aplikasiInventory.konekkeDatabase();
         tampilDataKeTabel();

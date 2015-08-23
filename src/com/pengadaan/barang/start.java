@@ -1,7 +1,7 @@
 package com.pengadaan.barang;
 
 import com.pengadaan.barang.kategory.kategori;
-import java.awt.Dimension;
+import com.pengadaan.barang.produk.product;
 import javax.swing.JOptionPane;
 
 public class start extends javax.swing.JFrame {
@@ -150,7 +150,7 @@ public class start extends javax.swing.JFrame {
 
     private void jMnItmPRDMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmPRDMousePressed
         // TODO add your handling code here:
-        new produk().setVisible(true);
+        new product().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnItmPRDMousePressed
 
