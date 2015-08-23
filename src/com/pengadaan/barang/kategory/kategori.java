@@ -2,10 +2,16 @@ package com.pengadaan.barang.kategory;
 
 import com.pengadaan.barang.PengadaanBarang;
 import com.pengadaan.barang.start;
+import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -30,6 +36,36 @@ public class kategori extends javax.swing.JFrame {
         enviBtnNew(false);
         jTxtFldKD_CTGRY2.setVisible(false);
         jTxtFldNM_CTGRY2.setVisible(false);
+        
+      
+       listTypeBarang();
+        
+        
+
+       
+        
+    }
+    
+    private void listTypeBarang(){
+       
+        try {
+             String sql2 = "Select * from mst_type_barang";
+            Statement st = aplikasiInventory.config.getConnection().createStatement();
+            ResultSet set;
+            set = st.executeQuery(sql2);
+            while (set.next()) {
+//                System.out.println("tes"+set.getInt("id"));
+                jCmbJBTN.addItem(new TypeBarangDv(set.getInt("id"), set.getString("name")));
+
+            }
+//            jCmbJBTN.setSelectedIndex(2);
+            
+           // jCmbJBTN.getSelectedItem();
+        } catch (SQLException ex) {
+            Logger.getLogger(kategori.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+            
     }
 
     private void clearTEXT() {
@@ -75,6 +111,12 @@ public class kategori extends javax.swing.JFrame {
     private void kondisiSave() { 
        r = jTxtFldKD_CTGRY.getText();
        i = jTxtFldNM_CTGRY.getText();
+//       ProveedorDAO dao = new ProveedorDAO();
+
+//        List<Proveedor> proveedor;
+       TypeBarangDv item = (TypeBarangDv) jCmbJBTN.getSelectedItem();
+        int lk = item.getId();
+//       String lk = jCmbJBTN.getSelectedItem().toString();
        
        try {
        if (r.equals("") || i.equals("")) 
@@ -86,7 +128,7 @@ public class kategori extends javax.swing.JFrame {
                  Statement st = aplikasiInventory.config.getConnection().createStatement();  
                  st.executeUpdate(
                        "insert into mst_category_barang"+
-                       "(kd_ctg, nm_ctg,status) values ('"+ r +"','"+ i +"','A')" );
+                       "(kd_ctg, nm_ctg,status,type_barang_id) values ('"+ r +"','"+ i +"','A','"+lk+"')" );
                  
                  tampilDataKeTabel();      
                  JOptionPane.showMessageDialog(this,"Data berhasil disimpan");
@@ -254,7 +296,13 @@ public class kategori extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jBtnCari = new javax.swing.JButton();
-        jCmbJBTN = new javax.swing.JComboBox();
+        try {
+            jCmbJBTN =(javax.swing.JComboBox)java.beans.Beans.instantiate(getClass().getClassLoader(), "com/pengadaan/barang/kategory.kategori_jCmbJBTN");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
         jlblJBTN = new javax.swing.JLabel();
         jlblxJBTN = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -358,7 +406,6 @@ public class kategori extends javax.swing.JFrame {
             }
         });
 
-        jCmbJBTN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Asset", "Habis Pakai" }));
         jCmbJBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCmbJBTNActionPerformed(evt);

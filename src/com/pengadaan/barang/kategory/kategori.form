@@ -297,17 +297,13 @@
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="jCmbJBTN">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="2">
-            <StringItem index="0" value="Asset"/>
-            <StringItem index="1" value="Habis Pakai"/>
-          </StringArray>
-        </Property>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCmbJBTNActionPerformed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CodeGeneration" type="java.lang.Integer" value="1"/>
+        <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="kategori_jCmbJBTN"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jlblJBTN">
       <Properties>
