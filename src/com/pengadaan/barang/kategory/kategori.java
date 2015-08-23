@@ -358,7 +358,7 @@ public class kategori extends javax.swing.JFrame {
             }
         });
 
-        jCmbJBTN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "", "Administrator", "Admin", "Super User", "User", "Teknisi" }));
+        jCmbJBTN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Asset", "Habis Pakai" }));
         jCmbJBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCmbJBTNActionPerformed(evt);

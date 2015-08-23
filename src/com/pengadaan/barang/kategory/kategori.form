@@ -299,13 +299,9 @@
     <Component class="javax.swing.JComboBox" name="jCmbJBTN">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="6">
-            <StringItem index="0" value=""/>
-            <StringItem index="1" value="Administrator"/>
-            <StringItem index="2" value="Admin"/>
-            <StringItem index="3" value="Super User"/>
-            <StringItem index="4" value="User"/>
-            <StringItem index="5" value="Teknisi"/>
+          <StringArray count="2">
+            <StringItem index="0" value="Asset"/>
+            <StringItem index="1" value="Habis Pakai"/>
           </StringArray>
         </Property>
       </Properties>
