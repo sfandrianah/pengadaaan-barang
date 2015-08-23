@@ -1,5 +1,6 @@
-package com.pengadaan.barang.kategory;
+package com.pengadaan.barang.produk;
 
+import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
 import com.pengadaan.barang.start;
 import java.awt.event.KeyEvent;
@@ -11,7 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class kategori extends javax.swing.JFrame {
+public class produk extends javax.swing.JFrame {
 
     private Integer row;
     private PengadaanBarang aplikasiInventory = new PengadaanBarang();
@@ -20,7 +21,7 @@ public class kategori extends javax.swing.JFrame {
     private TableColumn column;   
     private String e,r,i,k,a;
     
-    public kategori() {
+    public produk() {
         initComponents();
         aplikasiInventory.konekkeDatabase();
         tampilDataKeTabel();
@@ -585,14 +586,15 @@ public class kategori extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(kategori.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(produk.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(kategori.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(produk.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(kategori.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(produk.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(kategori.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(produk.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /*
@@ -601,7 +603,7 @@ public class kategori extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new kategori().setVisible(true);
+                new produk().setVisible(true);
             }
         });
     }

@@ -94,6 +94,11 @@ public class start extends javax.swing.JFrame {
                 jMnItmPRDMousePressed(evt);
             }
         });
+        jMnItmPRD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmPRDActionPerformed(evt);
+            }
+        });
         jMnMaster.add(jMnItmPRD);
 
         jMenuBar1.add(jMnMaster);
@@ -197,6 +202,10 @@ public class start extends javax.swing.JFrame {
             System.exit(0);
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void jMnItmPRDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmPRDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMnItmPRDActionPerformed
 
     /**
      * @param args the command line arguments
