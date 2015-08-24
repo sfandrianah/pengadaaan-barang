@@ -2,6 +2,7 @@ package com.pengadaan.barang;
 
 import com.pengadaan.barang.kategory.kategori;
 import com.pengadaan.barang.produk.product;
+import com.pengadaan.barang.transaksi_in.TransaksiIn;
 import javax.swing.JOptionPane;
 
 public class start extends javax.swing.JFrame {
@@ -37,7 +38,7 @@ public class start extends javax.swing.JFrame {
         jMnPopulasi = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Inventory System");
+        setTitle("SISTEM APLIKASI PENGADAAN BARANG");
         setBackground(new java.awt.Color(217, 245, 254));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -46,7 +47,9 @@ public class start extends javax.swing.JFrame {
             }
         });
 
-        jlblstart_jpg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/start.JPG"))); // NOI18N
+        jlblstart_jpg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/halaman-awal.jpg"))); // NOI18N
+        jlblstart_jpg.setMaximumSize(new java.awt.Dimension(500, 500));
+        jlblstart_jpg.setMinimumSize(new java.awt.Dimension(500, 500));
 
         jMenuBar1.setBackground(new java.awt.Color(157, 189, 254));
 
@@ -123,7 +126,7 @@ public class start extends javax.swing.JFrame {
 
         jMenuBar1.add(jMnTRN);
 
-        jMnPopulasi.setText("Populasi");
+        jMnPopulasi.setText("Report");
         jMnPopulasi.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMnPopulasiMousePressed(evt);
@@ -137,11 +140,11 @@ public class start extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlblstart_jpg)
+            .addComponent(jlblstart_jpg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jlblstart_jpg)
+            .addComponent(jlblstart_jpg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -162,7 +165,7 @@ public class start extends javax.swing.JFrame {
 
     private void jMnItmTRN_INMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmTRN_INMousePressed
         // TODO add your handling code here:        
-        new TRN_IN().setVisible(true);
+        new TransaksiIn().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnItmTRN_INMousePressed
 

@@ -67,6 +67,9 @@
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMnItmPRDMousePressed"/>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMnItmPRDActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="start_jMnItmPRD"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -104,7 +107,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMnPopulasi">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Populasi"/>
+            <Property name="text" type="java.lang.String" value="Report"/>
           </Properties>
           <Events>
             <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMnPopulasiMousePressed"/>
@@ -118,7 +121,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
-    <Property name="title" type="java.lang.String" value="Inventory System"/>
+    <Property name="title" type="java.lang.String" value="SISTEM APLIKASI PENGADAAN BARANG"/>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="fe" green="f5" red="d9" type="rgb"/>
     </Property>
@@ -161,7 +164,13 @@
     <Component class="javax.swing.JLabel" name="jlblstart_jpg">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/image/start.JPG"/>
+          <Image iconType="3" name="/image/halaman-awal.jpg"/>
+        </Property>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[500, 500]"/>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[500, 500]"/>
         </Property>
       </Properties>
       <AuxValues>

@@ -1,5 +1,6 @@
-package com.pengadaan.barang.produk;
+package com.pengadaan.barang.transaksi_in;
 
+import com.pengadaan.barang.produk.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
 import com.pengadaan.barang.start;
@@ -7,14 +8,19 @@ import java.awt.event.KeyEvent;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
 
-public class product extends javax.swing.JFrame {
+public class TransaksiIn extends javax.swing.JFrame {
 
     private Integer row;
     private PengadaanBarang aplikasiInventory = new PengadaanBarang();
@@ -24,7 +30,7 @@ public class product extends javax.swing.JFrame {
     private String e,r,i,k,a,satuan;
     private int idcategory;
     
-    public product() {
+    public TransaksiIn() {
         initComponents();
         aplikasiInventory.konekkeDatabase();
         tampilDataKeTabel();
@@ -33,45 +39,32 @@ public class product extends javax.swing.JFrame {
         enviBtnSave2(false);
         enviBtnNew(false);
         jTxtFldKD_BARANG2.setVisible(false);
-        jTxtFldNM_BARANG2.setVisible(false);
-        listCategoryBarang();
+//        jTxtFldNM_BARANG2.setVisible(false);
+        listDivisi();
+        jXDatePicker1.setDate(Calendar.getInstance().getTime());
+        jXDatePicker1.setFormats(new SimpleDateFormat("yyyy-MM-dd"));
+
+       // panel.add(picker);
+        
        // listSatuan();
     }
 
-    private void listSatuan(){
-        jCmbJBTN2.removeAllItems();
-        CategoryBarangDv categoryDv = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
-        try {
-            
-        String sql = "Select * from mst_satuan where category_barang_id="+categoryDv.getId();
-            Statement st = aplikasiInventory.config.getConnection().createStatement();
-            ResultSet set;
-            set = st.executeQuery(sql);
-            int no = 0;
-            while (set.next()) {
-                jCmbJBTN2.addItem(new CategoryBarangDv(set.getInt("id"),set.getString("name")));
-              }
-        } catch (SQLException ex) {
-            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-            
-    }
     
-    private void listCategoryBarang(){
+    
+    private void listDivisi(){
         
         try {
             
-        String sql = "Select * from mst_category_barang";
+        String sql = "Select * from mst_divisi";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set;
             set = st.executeQuery(sql);
             int no = 0;
             while (set.next()) {
-                jCmbJBTN.addItem(new CategoryBarangDv(set.getInt("id"),set.getString("nm_ctg")));
+                jCmbJBTN.addItem(new DivisiDv(set.getInt("id"),set.getString("name")));
               }
         } catch (SQLException ex) {
-            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
         }
 
             
@@ -79,7 +72,7 @@ public class product extends javax.swing.JFrame {
     
     private void clearTEXT() {
         jTxtFldKD_BARANG.setText("");
-        jTxtFldNM_BARANG.setText("");
+//        jTxtFldNM_BARANG.setText("");
 //        jCmbJBTN2.removeAllItems();
     }
     
@@ -105,7 +98,7 @@ public class product extends javax.swing.JFrame {
     
     private void enableField(boolean x) {
         jTxtFldKD_BARANG.setEnabled(x);
-        jTxtFldNM_BARANG.setEnabled(x);
+//        jTxtFldNM_BARANG.setEnabled(x);
     }
     
     private void tampilDataKeTabel() {
@@ -120,11 +113,11 @@ public class product extends javax.swing.JFrame {
     
     private void kondisiSave() { 
        r = jTxtFldKD_BARANG.getText();
-       i = jTxtFldNM_BARANG.getText();
+//       i = jTxtFldNM_BARANG.getText();
        
        CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
        idcategory = category.getId();
-       satuan = jCmbJBTN2.getSelectedItem().toString();
+//       satuan = jCmbJBTN2.getSelectedItem().toString();
        
        try {
        if (r.equals("") || i.equals("")) 
@@ -149,9 +142,9 @@ public class product extends javax.swing.JFrame {
     
     private void kondisiEdit() { 
        r = jTxtFldKD_BARANG.getText();
-       i = jTxtFldNM_BARANG.getText();
+//       i = jTxtFldNM_BARANG.getText();
        k = jTxtFldKD_BARANG2.getText();
-       a = jTxtFldNM_BARANG2.getText();
+//       a = jTxtFldNM_BARANG2.getText();
        
        try {
        if (r.equals("") || i.equals("")) 
@@ -220,7 +213,17 @@ public class product extends javax.swing.JFrame {
             column.setPreferredWidth(40);
             column = jTabel.getColumnModel().getColumn(1);
             column.setPreferredWidth(156);
+            
+            JComboBox comboBox = new JComboBox();
+            comboBox.addItem("Snowboarding");
+            comboBox.addItem("Rowing");
+            comboBox.addItem("Chasing toddlers");
+            comboBox.addItem("Speed reading");
+            comboBox.addItem("Teaching high school");
+            comboBox.addItem("None");
+//            AutocompleteJComboBox
             column = jTabel.getColumnModel().getColumn(2);
+            column.setCellEditor(new DefaultCellEditor(comboBox));
             column.setPreferredWidth(200);
             column = jTabel.getColumnModel().getColumn(3);
             column.setPreferredWidth(200);
@@ -241,7 +244,7 @@ public class product extends javax.swing.JFrame {
        
         jTxtFldKD_BARANG.setText(kolom2);
      //   jTxtFldKD_BARANG2.setText(kolom2);
-        jTxtFldNM_BARANG.setText(kolom3); 
+//        jTxtFldNM_BARANG.setText(kolom3); 
      //   jTxtFldNM_BARANG2.setText(kolom3); 
       
     }
@@ -314,7 +317,6 @@ public class product extends javax.swing.JFrame {
         jlblxKD_BARANG = new javax.swing.JLabel();
         jlblxNM_BARANG = new javax.swing.JLabel();
         jTxtFldKD_BARANG = new javax.swing.JTextField();
-        jTxtFldNM_BARANG = new javax.swing.JTextField();
         jBtnSave = new javax.swing.JButton();
         jBtnEdit = new javax.swing.JButton();
         jBtnDlt = new javax.swing.JButton();
@@ -323,7 +325,6 @@ public class product extends javax.swing.JFrame {
         jBtnNew = new javax.swing.JButton();
         jTxtFldKD_BARANG2 = new javax.swing.JTextField();
         jBtnSave2 = new javax.swing.JButton();
-        jTxtFldNM_BARANG2 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jBtnCari = new javax.swing.JButton();
@@ -331,13 +332,15 @@ public class product extends javax.swing.JFrame {
         jlblJBTN = new javax.swing.JLabel();
         jlblxJBTN = new javax.swing.JLabel();
         jlblJBTN2 = new javax.swing.JLabel();
-        jCmbJBTN2 = new javax.swing.JComboBox();
         jlblxJBTN1 = new javax.swing.JLabel();
+        jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMnKembali = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Form Barang");
+        setTitle("Form Pemasukan Barang");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -345,19 +348,13 @@ public class product extends javax.swing.JFrame {
             }
         });
 
-        jlblKD_BARANG.setText("Kode Barang*");
+        jlblKD_BARANG.setText("No Transaksi*");
 
-        jlblNM_BARANG.setText("Nama Barang*");
+        jlblNM_BARANG.setText("Date*");
 
         jlblxKD_BARANG.setText(":");
 
         jlblxNM_BARANG.setText(":");
-
-        jTxtFldNM_BARANG.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTxtFldNM_BARANGActionPerformed(evt);
-            }
-        });
 
         jBtnSave.setText("Simpan");
         jBtnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -382,25 +379,18 @@ public class product extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "No", "Kode Barang", "Nama Barang", "Category Barang", "Satuan Barang"
+                "No", "Nama Barang", "Satuan", "Banyaknya", "Harga", "Honor", "Jumlah"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -453,19 +443,17 @@ public class product extends javax.swing.JFrame {
             }
         });
 
-        jlblJBTN.setText("Kategori Barang*");
+        jlblJBTN.setText("Divisi*");
 
         jlblxJBTN.setText(":");
 
-        jlblJBTN2.setText("Satuan Barang*");
-
-        jCmbJBTN2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCmbJBTN2ActionPerformed(evt);
-            }
-        });
+        jlblJBTN2.setText("Keterangan*");
 
         jlblxJBTN1.setText(":");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
 
         jMenuBar1.setBackground(new java.awt.Color(236, 236, 236));
         jMenuBar1.setName(""); // NOI18N
@@ -488,14 +476,7 @@ public class product extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 687, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -516,12 +497,9 @@ public class product extends javax.swing.JFrame {
                                         .addComponent(jTxtFldKD_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jTxtFldKD_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jTxtFldNM_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTxtFldNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jBtnNew)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -532,7 +510,14 @@ public class product extends javax.swing.JFrame {
                                 .addComponent(jBtnEdit)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jBtnDlt)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 119, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -546,21 +531,21 @@ public class product extends javax.swing.JFrame {
                     .addComponent(jTxtFldKD_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTxtFldNM_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jlblxNM_BARANG)
                     .addComponent(jlblNM_BARANG)
-                    .addComponent(jTxtFldNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlblxJBTN)
                     .addComponent(jlblJBTN)
                     .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlblxJBTN1)
-                    .addComponent(jlblJBTN2)
-                    .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jlblxJBTN1)
+                        .addComponent(jlblJBTN2))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -668,17 +653,9 @@ public class product extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyTyped
 
     private void jCmbJBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCmbJBTNActionPerformed
-                // TODO add your handling code here:
-        listSatuan();
+        // TODO add your handling code here:
+        //        listSatuan();
     }//GEN-LAST:event_jCmbJBTNActionPerformed
-
-    private void jCmbJBTN2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCmbJBTN2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCmbJBTN2ActionPerformed
-
-    private void jTxtFldNM_BARANGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtFldNM_BARANGActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTxtFldNM_BARANGActionPerformed
 
     /**
      * @param args the command line arguments
@@ -701,14 +678,16 @@ public class product extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(product.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(product.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(product.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(product.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -718,7 +697,7 @@ public class product extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new product().setVisible(true);
+                new TransaksiIn().setVisible(true);
             }
         });
     }
@@ -730,17 +709,17 @@ public class product extends javax.swing.JFrame {
     private javax.swing.JButton jBtnSave;
     private javax.swing.JButton jBtnSave2;
     private javax.swing.JComboBox jCmbJBTN;
-    private javax.swing.JComboBox jCmbJBTN2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMnKembali;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTxtFldKD_BARANG;
     private javax.swing.JTextField jTxtFldKD_BARANG2;
-    private javax.swing.JTextField jTxtFldNM_BARANG;
-    private javax.swing.JTextField jTxtFldNM_BARANG2;
+    private org.jdesktop.swingx.JXDatePicker jXDatePicker1;
     private javax.swing.JLabel jlblJBTN;
     private javax.swing.JLabel jlblJBTN2;
     private javax.swing.JLabel jlblKD_BARANG;
