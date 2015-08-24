@@ -224,7 +224,7 @@ public class kategori extends javax.swing.JFrame {
        try {
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             st.executeUpdate(
-            " delete from kategori where kd_ctg ='"+ e +"'");
+            " delete from mst_category_barang where kd_ctg ='"+ e +"'");
             clearTEXT();
             tampilDataKeTabel();
             
@@ -296,13 +296,7 @@ public class kategori extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jBtnCari = new javax.swing.JButton();
-        try {
-            jCmbJBTN =(javax.swing.JComboBox)java.beans.Beans.instantiate(getClass().getClassLoader(), "com/pengadaan/barang/kategory.kategori_jCmbJBTN");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
+        jCmbJBTN = new javax.swing.JComboBox();
         jlblJBTN = new javax.swing.JLabel();
         jlblxJBTN = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();

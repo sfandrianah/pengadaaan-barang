@@ -301,7 +301,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCmbJBTNActionPerformed"/>
       </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CodeGeneration" type="java.lang.Integer" value="1"/>
         <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="kategori_jCmbJBTN"/>
       </AuxValues>
     </Component>
