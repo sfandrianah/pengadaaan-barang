@@ -24,6 +24,11 @@ public class product extends javax.swing.JFrame {
     private String e,r,i,k,a,satuan;
     private int idcategory;
     private Double hrg_jual,hrg_beli;
+    private String t;
+    private String j;
+    private String l;
+    private String b;
+    private String o;
     
     public product() {
         initComponents();
@@ -154,26 +159,35 @@ public class product extends javax.swing.JFrame {
     private void kondisiEdit() { 
        r = jTxtFldKD_BARANG.getText();
        i = jTxtFldNM_BARANG.getText();
+       t = jTxtFldHRG_JUAL.getText();
+       e = jTxtFldHRG_BELI.getText();
+       m = jCmbJBTN.getSelectedItem();
+       n = jCmbJBTN.getSelectedItem();
        k = jTxtFldKD_BARANG2.getText();
        a = jTxtFldNM_BARANG2.getText();
+       j = jTxtFldHRG_JUAL2.getText();
+       o = jTxtFldHRG_BELI2.getText();
        
        try {
-       if (r.equals("") || i.equals("")) 
+       if (r.equals("") || i.equals("") || t.equals("") || e.equals("")) 
            {
            JOptionPane.showMessageDialog(null, "Data harus diisi semua!");
            clearTEXT();
            }
-       else if (r.equals(k) && i.equals(a)) 
+       else if (r.equals(k) && i.equals(a) && t.equals(j) && e.equals(o)) 
            {
            JOptionPane.showMessageDialog(null, "Tidak ada data yang diperbaharui!");
            }
        else {    
                  Statement st = aplikasiInventory.config.getConnection().createStatement();  
                  st.executeUpdate(
-                       "update mst_category_barang set "+
-                       "kd_ctg = "+"'"+ r +"', "+
-                       "nm_ctg = "+"'"+ i +"' "+ 
-                       "where kd_ctg = '"+ k +"'");
+                       "update mst_barang set "+
+                       "kd_barang       = "+"'"+ r +"', "+
+                       "nm_barang       = "+"'"+ i +"', "+
+                    
+                       "hrg_jual_barang = "+"'"+ t +"', "+
+                       "hrg_beli_barang = "+"'"+ e +"' "+
+                       "where kd_barang = '"+ k +"'");
        
                  tampilDataKeTabel(); 
                  JOptionPane.showMessageDialog(this,"Data berhasil diperbaharui");
@@ -198,7 +212,7 @@ public class product extends javax.swing.JFrame {
             while (set.next()) {
                 no++;
                 System.out.println("id barang : "+set.getInt("ctg_barang_id"));
-                 String namectg = null;
+                String namectg = null;
                 String sqls = "Select * from mst_category_barang where id="+set.getInt("ctg_barang_id");
                 Statement sts = aplikasiInventory.config.getConnection().createStatement();
                 ResultSet sets = sts.executeQuery(sqls);
@@ -214,8 +228,8 @@ public class product extends javax.swing.JFrame {
                 String kolom3 = set.getString("nm_barang");
                 String kolom4 = namectg;
                 String kolom5 = set.getString("satuan_barang");
-                String kolom6 = String.valueOf(set.getDouble("hrg_beli_barang"));
-                String kolom7 = String.valueOf(set.getDouble("hrg_jual_barang"));
+                String kolom6 = String.valueOf(set.getDouble("hrg_jual_barang"));
+                String kolom7 = String.valueOf(set.getDouble("hrg_beli_barang"));
            
                 String[] data = {kolom1, kolom2, kolom3, kolom4,kolom5,kolom6,kolom7};
                 DfltTblMode.addRow(data);
@@ -244,12 +258,25 @@ public class product extends javax.swing.JFrame {
         String kolom1 = jTabel.getValueAt(row,0).toString();
         String kolom2 = jTabel.getValueAt(row,1).toString();
         String kolom3 = jTabel.getValueAt(row,2).toString();
+        String kolom4 = jTabel.getValueAt(row,3).toString();
+        String kolom5 = jTabel.getValueAt(row,4).toString();
+        String kolom6 = jTabel.getValueAt(row,5).toString();
+        String kolom7 = jTabel.getValueAt(row,6).toString();
        
         jTxtFldKD_BARANG.setText(kolom2);
      //   jTxtFldKD_BARANG2.setText(kolom2);
         jTxtFldNM_BARANG.setText(kolom3); 
-     //   jTxtFldNM_BARANG2.setText(kolom3); 
-      
+     //   jTxtFldNM_BARANG2.setText(kolom3);
+        System.out.println(kolom4);
+        jCmbJBTN.setEditable(true);
+        jCmbJBTN2.setEditable(true);
+        jCmbJBTN.setSelectedItem(kolom4);
+        jCmbJBTN2.setSelectedItem(kolom5);
+        jCmbJBTN.setEditable(false);
+        jCmbJBTN2.setEditable(false);
+        
+      jTxtFldHRG_JUAL.setText(kolom6);
+      jTxtFldHRG_BELI.setText(kolom7);
     }
     
     private void kondisiHapus() {
@@ -315,7 +342,6 @@ public class product extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jlblKD_BARANG = new javax.swing.JLabel();
         jlblNM_BARANG = new javax.swing.JLabel();
         jlblxKD_BARANG = new javax.swing.JLabel();
         jlblxNM_BARANG = new javax.swing.JLabel();
@@ -345,6 +371,9 @@ public class product extends javax.swing.JFrame {
         jlblxNM_BARANG2 = new javax.swing.JLabel();
         jTxtFldHRG_BELI = new javax.swing.JTextField();
         jlblJBTN4 = new javax.swing.JLabel();
+        jlblJBTN3 = new javax.swing.JLabel();
+        jTxtFldHRG_BELI2 = new javax.swing.JTextField();
+        jTxtFldHRG_JUAL2 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMnKembali = new javax.swing.JMenu();
 
@@ -356,8 +385,6 @@ public class product extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-
-        jlblKD_BARANG.setText("Kode Barang*");
 
         jlblNM_BARANG.setText("Nama Barang*");
 
@@ -501,7 +528,9 @@ public class product extends javax.swing.JFrame {
             }
         });
 
-        jlblJBTN4.setText("Harga Jual*");
+        jlblJBTN4.setText("Kode Barang*");
+
+        jlblJBTN3.setText("Harga Belil*");
 
         jMenuBar1.setBackground(new java.awt.Color(236, 236, 236));
         jMenuBar1.setName(""); // NOI18N
@@ -533,7 +562,7 @@ public class product extends javax.swing.JFrame {
                         .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jBtnNew)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -548,8 +577,10 @@ public class product extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jlblNM_BARANG)
                                     .addComponent(jlblJBTN)
-                                    .addComponent(jlblJBTN2)
-                                    .addComponent(jlblJBTN1))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jlblJBTN1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlblJBTN2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlblJBTN3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -557,7 +588,8 @@ public class product extends javax.swing.JFrame {
                                         .addComponent(jlblxKD_BARANG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jlblxJBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jlblxJBTN1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(jlblxNM_BARANG1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jlblxNM_BARANG1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jlblxNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -570,16 +602,15 @@ public class product extends javax.swing.JFrame {
                                         .addComponent(jTxtFldNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTxtFldHRG_JUAL, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jlblJBTN4)
-                                    .addComponent(jlblKD_BARANG))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jlblxNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTxtFldHRG_BELI, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(124, 124, 124)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTxtFldHRG_JUAL, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTxtFldHRG_JUAL2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTxtFldHRG_BELI, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTxtFldHRG_BELI2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jlblJBTN4))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -613,15 +644,16 @@ public class product extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jlblJBTN1)
                             .addComponent(jlblxNM_BARANG1)
-                            .addComponent(jTxtFldHRG_JUAL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTxtFldHRG_JUAL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTxtFldHRG_JUAL2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jlblxNM_BARANG2)
-                                .addComponent(jlblKD_BARANG))
-                            .addComponent(jTxtFldHRG_BELI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jlblJBTN3)
+                            .addComponent(jTxtFldHRG_BELI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlblxNM_BARANG2)
+                            .addComponent(jTxtFldHRG_BELI2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jlblJBTN4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -807,7 +839,9 @@ public class product extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTxtFldHRG_BELI;
+    private javax.swing.JTextField jTxtFldHRG_BELI2;
     private javax.swing.JTextField jTxtFldHRG_JUAL;
+    private javax.swing.JTextField jTxtFldHRG_JUAL2;
     private javax.swing.JTextField jTxtFldKD_BARANG;
     private javax.swing.JTextField jTxtFldKD_BARANG2;
     private javax.swing.JTextField jTxtFldNM_BARANG;
@@ -815,8 +849,8 @@ public class product extends javax.swing.JFrame {
     private javax.swing.JLabel jlblJBTN;
     private javax.swing.JLabel jlblJBTN1;
     private javax.swing.JLabel jlblJBTN2;
+    private javax.swing.JLabel jlblJBTN3;
     private javax.swing.JLabel jlblJBTN4;
-    private javax.swing.JLabel jlblKD_BARANG;
     private javax.swing.JLabel jlblNM_BARANG;
     private javax.swing.JLabel jlblxJBTN;
     private javax.swing.JLabel jlblxJBTN1;
