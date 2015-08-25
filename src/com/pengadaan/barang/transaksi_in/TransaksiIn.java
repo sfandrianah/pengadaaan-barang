@@ -4,276 +4,585 @@ import com.pengadaan.barang.produk.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
 import com.pengadaan.barang.start;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
+import javax.swing.text.JTextComponent;
 import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
 
 public class TransaksiIn extends javax.swing.JFrame {
 
-    private Integer row;
+    private Integer row, rows, row2, rows3;
     private PengadaanBarang aplikasiInventory = new PengadaanBarang();
     private JTable jTabel = new JTable();
     private DefaultTableModel DfltTblMode;
-    private TableColumn column;   
-    private String e,r,i,k,a,satuan;
+    private TableColumn column;
+    private String e, r, i, k, a, satuan, code, desc, date, divisi;
     private int idcategory;
-    
+    DefaultTableModel models = new DefaultTableModel();
+
     public TransaksiIn() {
         initComponents();
         aplikasiInventory.konekkeDatabase();
-        tampilDataKeTabel();
+//        tampilDataKeTabel();
+        columnTable();
         enableBtn(false);
         enviBtnSave(true);
         enviBtnSave2(false);
         enviBtnNew(false);
-        jTxtFldKD_BARANG2.setVisible(false);
+//        jTxtFldKD_BARANG2.setVisible(false);
 //        jTxtFldNM_BARANG2.setVisible(false);
         listDivisi();
         jXDatePicker1.setDate(Calendar.getInstance().getTime());
         jXDatePicker1.setFormats(new SimpleDateFormat("yyyy-MM-dd"));
 
        // panel.add(picker);
-        
-       // listSatuan();
+        // listSatuan();
     }
 
-    
-    
-    private void listDivisi(){
-        
+    private void listDivisi() {
+
         try {
-            
-        String sql = "Select * from mst_divisi";
+
+            String sql = "Select * from mst_divisi";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set;
             set = st.executeQuery(sql);
             int no = 0;
             while (set.next()) {
-                jCmbJBTN.addItem(new DivisiDv(set.getInt("id"),set.getString("name")));
-              }
+                jCmbJBTN.addItem(new DivisiDv(set.getInt("id"), set.getString("name")));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-            
     }
-    
+
     private void clearTEXT() {
-        jTxtFldKD_BARANG.setText("");
+       // jTxtFldNO_TRANS.setText("");
 //        jTxtFldNM_BARANG.setText("");
 //        jCmbJBTN2.removeAllItems();
     }
-    
+
     private void enableBtn(boolean x) {
         jBtnDlt.setEnabled(x);
         jBtnEdit.setEnabled(x);
     }
-    
+
     private void enviBtnSave(boolean x) {
         jBtnSave.setEnabled(x);
         jBtnSave.setVisible(x);
     }
-    
-    private void enviBtnNew(boolean x){
+
+    private void enviBtnNew(boolean x) {
         jBtnNew.setEnabled(x);
         jBtnNew.setVisible(x);
     }
-    
+
     private void enviBtnSave2(boolean x) {
         jBtnSave2.setEnabled(x);
         jBtnSave2.setVisible(x);
     }
-    
+
     private void enableField(boolean x) {
-        jTxtFldKD_BARANG.setEnabled(x);
+        jTxtFldNO_TRANS.setEnabled(x);
 //        jTxtFldNM_BARANG.setEnabled(x);
     }
-    
+
     private void tampilDataKeTabel() {
         jTabel = jTable1;
         tabelModel(jTabel);
     }
-    
+
     private void tampilDataKeTabelcari() {
         jTabel = jTable1;
         cari(jTabel);
     }
-    
-    private void kondisiSave() { 
-       r = jTxtFldKD_BARANG.getText();
+
+    private void kondisiSave() {
+        code = jTxtFldNO_TRANS.getText();
+        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(dt1.format(jXDatePicker1.getDate()));
+        date = dt1.format(jXDatePicker1.getDate());
+        DivisiDv categoryDv = (DivisiDv) jCmbJBTN.getSelectedItem();
+        divisi = String.valueOf(categoryDv.getId());
+        desc = jTextArea1.getText();
+        
+      // r = jTxtFldKD_BARANG.getText();
 //       i = jTxtFldNM_BARANG.getText();
-       
-       CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
-       idcategory = category.getId();
+
+        
 //       satuan = jCmbJBTN2.getSelectedItem().toString();
-       
-       try {
-       if (r.equals("") || i.equals("")) 
-           {
-           JOptionPane.showMessageDialog(null, "Data harus diisi semua!");
-           clearTEXT();
-           }
-       else {    
-                 Statement st = aplikasiInventory.config.getConnection().createStatement();  
-                 st.executeUpdate(
-                       "insert into mst_barang"+
-                       "(kd_barang, nm_barang,status,satuan_barang,ctg_barang_id) values ('"+ r +"','"+ i +"','A','"+satuan+"','"+idcategory+"')" );
-                 
-                 tampilDataKeTabel();      
-                 JOptionPane.showMessageDialog(this,"Data berhasil disimpan");
-               }
-           }
-                    catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, "Data gagal disimpan! : " +ex);
-                    }
-               }
-    
-    private void kondisiEdit() { 
-       r = jTxtFldKD_BARANG.getText();
-//       i = jTxtFldNM_BARANG.getText();
-       k = jTxtFldKD_BARANG2.getText();
-//       a = jTxtFldNM_BARANG2.getText();
-       
-       try {
-       if (r.equals("") || i.equals("")) 
-           {
-           JOptionPane.showMessageDialog(null, "Data harus diisi semua!");
-           clearTEXT();
-           }
-       else if (r.equals(k) && i.equals(a)) 
-           {
-           JOptionPane.showMessageDialog(null, "Tidak ada data yang diperbaharui!");
-           }
-       else {    
-                 Statement st = aplikasiInventory.config.getConnection().createStatement();  
-                 st.executeUpdate(
-                       "update mst_category_barang set "+
-                       "kd_ctg = "+"'"+ r +"', "+
-                       "nm_ctg = "+"'"+ i +"' "+ 
-                       "where kd_ctg = '"+ k +"'");
-       
-                 tampilDataKeTabel(); 
-                 JOptionPane.showMessageDialog(this,"Data berhasil diperbaharui");
-               }
-           }
-                    catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, "Data gagal diperbaharui! : " +ex);
-                    }
-               }
-    
-    private void tabelModel(JTable jTabel) {
+
         try {
-            Object[] field = {"No","Kode Barang","Nama Barang","Category Barang", "Satuan Barang"};
-            DfltTblMode = new DefaultTableModel(null, field);
-            jTabel.setModel(DfltTblMode);
             
+            if (code.equals("") || desc.equals("")) {
+                JOptionPane.showMessageDialog(null, "Data harus diisi semua!");
+                clearTEXT();
+            } else {
+                
+                
+                Statement st = aplikasiInventory.config.getConnection().createStatement();
+                st.executeUpdate(
+                        "insert into trx_pemasukan"
+                        + "(trx_no_pemasukan, trx_date_pemasukan,divisi_id,trx_desc_pemasukan,trx_total_pemasukan) values ('" + code + "','" + date + "','"+divisi+"','" + desc + "',"+jLabel2.getText()+")");
+
+//                tampilDataKeTabel();
+                String sending = "";
+                int i;
+                for (i=0; i<jTable1.getRowCount(); i++){
+                    int n = i + i;
+                    
+                    String kolom2 = jTable1.getValueAt(i, 1).toString();
+                    String kolom3 = jTable1.getValueAt(i, 2).toString();
+                    String kolom4 = jTable1.getValueAt(i, 3).toString();
+                    String kolom5 = jTable1.getValueAt(i, 4).toString();
+                    String kolom6 = jTable1.getValueAt(i, 5).toString();
+                    String kolom7 = jTable1.getValueAt(i, 6).toString();
+                    String kolom8 = jTable1.getValueAt(i, 7).toString();
+                    
+                    String coma = "";
+                    if(n == jTable1.getRowCount()){
+                        coma = "";
+                    } else {
+                        coma = ",";
+                    }
+                    sending = sending + "('"+kolom2+"','"+kolom3+"',"+kolom5+",'"+kolom6+"','"+kolom7+"','"+kolom8+"',LAST_INSERT_ID())"+coma;
+                    
+                    System.out.println("kolom 2 = "+kolom2+
+                            "kolom 3 = "+kolom3+
+                            "kolom 4 = "+kolom4+
+                            "kolom 5 = "+kolom5);
+                    
+                }
+                System.out.println("sending = "+sending);
+                
+                 st.executeUpdate(
+                        "insert into trx_pemasukan_item"
+                        + "(barang_id, barang_name,trx_qty_pemasukan_item,trx_price_pemasukan_item,"
+                        + "trx_honor_pemasukan_item,trx_total_pemasukan_item,trx_pemasukan_id) "
+                        + "values "+sending);
+                JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Data gagal disimpan! : " + ex);
+        }
+    }
+
+    private void kondisiEdit() {
+        r = jTxtFldNO_TRANS.getText();
+//       i = jTxtFldNM_BARANG.getText();
+//        k = jTxtFldKD_BARANG2.getText();
+//       a = jTxtFldNM_BARANG2.getText();
+
+        try {
+            if (r.equals("") || i.equals("")) {
+                JOptionPane.showMessageDialog(null, "Data harus diisi semua!");
+                clearTEXT();
+            } else if (r.equals(k) && i.equals(a)) {
+                JOptionPane.showMessageDialog(null, "Tidak ada data yang diperbaharui!");
+            } else {
+                Statement st = aplikasiInventory.config.getConnection().createStatement();
+                st.executeUpdate(
+                        "update mst_category_barang set "
+                        + "kd_ctg = " + "'" + r + "', "
+                        + "nm_ctg = " + "'" + i + "' "
+                        + "where kd_ctg = '" + k + "'");
+
+                tampilDataKeTabel();
+                JOptionPane.showMessageDialog(this, "Data berhasil diperbaharui");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Data gagal diperbaharui! : " + ex);
+        }
+    }
+
+    private void listBarang(KeyEvent value, JComboBox jcomb, int columns, int rows, DefaultTableModel dtm) {
+        int modifiersEx = value.getModifiersEx();
+        String modString = "extended modifiers = " + modifiersEx;
+        String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+        if (tmpString.length() > 0) {
+            modString += " (" + tmpString + ")";
+        } else {
+            modString += " (no extended modifiers)";
+        }
+        System.out.println(tmpString);
+
+        String values = null;
+        values += value;
+        System.out.println("values" + values);
+        try {
+            //jcomb.removeAllItems();
+            String sql = "Select * from mst_barang where nm_barang like '%" + values + "'";
+            Statement st = aplikasiInventory.config.getConnection().createStatement();
+            ResultSet set;
+            set = st.executeQuery(sql);
+            int no = 0;
+            while (set.next()) {
+
+                jcomb.addItem(new DivisiDv(set.getInt("id"), set.getString("nm_barang")));
+                dtm.setValueAt(jcomb, rows, columns);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void columnTable() {
+        System.out.println("masuk sini");
+
+        jTable1.setModel(models);
+//        JTable table = new JTable(model);
+
+// Create a couple of columns 
+        models.addColumn("No");
+        models.addColumn("");
+        models.addColumn("Nama Barang");
+        models.addColumn("Satuan");
+        models.addColumn("Qty");
+        models.addColumn("Harga");
+        models.addColumn("Honor");
+        models.addColumn("Jumlah");
+
+    }
+
+    private void modeljDialogPRD(JTable jTabel3, Integer rowss) {
+        try {
+            Object[] field = {"No", "", "Nama Produk", "Satuan", "Harga"};
+            DfltTblMode = new DefaultTableModel(null, field);
+            jTabel3.setModel(DfltTblMode);
+
+            row2 = rowss;
             String sql = "Select * from mst_barang";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);
-//            jTabel.re
+
             int no = 0;
             while (set.next()) {
                 no++;
-                System.out.println("id barang : "+set.getInt("ctg_barang_id"));
-                 String namectg = null;
-                String sqls = "Select * from mst_category_barang where id="+set.getInt("ctg_barang_id");
-                Statement sts = aplikasiInventory.config.getConnection().createStatement();
-                ResultSet sets = sts.executeQuery(sqls);
-                while (sets.next()) {
-                    namectg = sets.getString("nm_ctg");
-                    
-                }
-                System.out.println("id barang : "+namectg);
-//                 CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getName(set.getInt("ctg_barang_id"));
-//                 namectg = jCmbJBTN.get
                 String kolom1 = String.valueOf(no).toString();
-                String kolom2 = set.getString("kd_barang");
-                String kolom3 = set.getString("nm_barang");
-                String kolom4 = namectg;
-                String kolom5 = set.getString("satuan_barang");
-           
-                String[] data = {kolom1, kolom2, kolom3, kolom4,kolom5};
+                String kolom2 = set.getString("nm_barang");
+                String kolom3 = set.getString("satuan_barang");
+                String kolom4 = String.valueOf(set.getInt("id")).toString();
+                String kolom5 = String.valueOf(set.getDouble("hrg_beli_barang")).toString();
+                System.out.println("so " + kolom3);
+                if (kolom3 == null) {
+                    kolom3 = "";
+                } else if (kolom2 == null) {
+                    kolom2 = "";
+                }
+                String[] data = {kolom1, kolom4, kolom2, kolom3,kolom5};
                 DfltTblMode.addRow(data);
             }
+
+            jTabel3.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+            column = jTabel3.getColumnModel().getColumn(0);
+            column.setPreferredWidth(40);
+
+            column = jTabel3.getColumnModel().getColumn(1);
+            column.setPreferredWidth(10);
+            column = jTabel3.getColumnModel().getColumn(2);
+            column.setPreferredWidth(250);
+            column = jTabel3.getColumnModel().getColumn(3);
+            column.setPreferredWidth(75);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Koneksi gagal: " + e);
+        }
+    }
+
+    private void klikTabeljDialog(JTable jTabel) {
+        jTabel.setRowSelectionAllowed(true);
+        row2 = jTabel.getSelectedRow();
+        String kolom1 = jTabel.getValueAt(row2, 0).toString();
+        String kolom2 = jTabel.getValueAt(row2, 1).toString();
+        String kolom3 = jTabel.getValueAt(row2, 2).toString();
+        String kolom4 = jTabel.getValueAt(row2, 3).toString();
+        String kolom6 = jTabel.getValueAt(row2, 4).toString();
+
+//        System.out.println("os " + kolom3);
+//        jTable1.setValueAt(kolom1, row, 0);
+        jTable1.setValueAt(kolom2, rows, 1);
+        jTable1.setValueAt(kolom3, rows, 2);
+        jTable1.setValueAt(kolom4, rows, 3);
+        jTable1.setValueAt(kolom6, rows, 5);
+    }
+
+    private void addItem(DefaultTableModel model) {
+//        ItemDv itemDv = new ItemDv(0, 0,"tes",0, 0, 0, 0);
+
+        int no = model.getRowCount() + 1;
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        jTable1.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+//        Vector<ItemDv> vector = new Vector<ItemDv>();
+//        ItemDv itemDv = new ItemDv();
+
+        model.addRow(new Object[]{String.valueOf(no), "", "", "", "", "0", "0", "0"});
+//        model.isCellEditable(1, 2);
+       
+        
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        column = jTable1.getColumnModel().getColumn(0);
+        column.setPreferredWidth(50);
+       
+       
+        
+        
+        column = jTable1.getColumnModel().getColumn(1);
+        column.setPreferredWidth(10);
+//            jTable1.add
+//            column.setCellEditor(new DefaultCellEditor(comboBox));
+        
+        
+        column = jTable1.getColumnModel().getColumn(2);
+        column.setPreferredWidth(150);
+        
+        column = jTable1.getColumnModel().getColumn(3);
+        column.setPreferredWidth(70);
+        column = jTable1.getColumnModel().getColumn(4);
+        column.setPreferredWidth(50);
+        JTextField jtey = new JTextField();
+        
+        jtey.setEditable(true);
+//        jtey.setEnabled(false);
+        jtey.addKeyListener(new KeyListener() {
+        String test = "";
+            @Override
+            public void keyTyped(KeyEvent e) {
+                
+                test = test + String.valueOf(e.getKeyChar());
+                keyupTable(jTable1,test);
+                System.out.println(test);
+//                System.out.println("masuk sini");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+//                System.out.println("masuk sini");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+        //        System.out.println("masuk sini");
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
             
+        });
+        column.setCellEditor(new DefaultCellEditor(jtey));
+        
+        column = jTable1.getColumnModel().getColumn(5);
+        column.setPreferredWidth(150);
+        column = jTable1.getColumnModel().getColumn(6);
+        column.setPreferredWidth(150);
+        column = jTable1.getColumnModel().getColumn(7);
+        column.setPreferredWidth(150);
+    
+    }
+    
+   public void keyupTable(JTable jTabel, String test) {
+        jTabel.setRowSelectionAllowed(true);
+        rows = jTabel.getSelectedRow();
+        String kolom1 = jTabel.getValueAt(rows, 0).toString();
+        String kolom2 = jTabel.getValueAt(rows, 1).toString();
+        int getcol = jTabel.getSelectedColumn();
+        String kolom3 = jTabel.getValueAt(rows, 2).toString();
+        String kolom6 = jTabel.getValueAt(rows, 5).toString();
+        
+
+        System.out.println("sout " + jTabel.getSelectedColumn());
+
+//        jTabel.getSelectedColumn();
+//        Integer rowss = rows3;
+        Double productdb = Double.valueOf(kolom6);
+        Double total = productdb * Double.valueOf(test);
+//        jTabel.setValueAt(test, rows, 5);
+        jTabel.setValueAt("0", rows, 6);
+        jTabel.setValueAt(total, rows, 7);
+        Double jumlahAll = 0D;
+        for (int i=0; i<jTable1.getRowCount(); i++){
+            jumlahAll += Double.valueOf(jTabel.getValueAt(i, 7).toString());
+        }
+        
+        jLabel2.setText(jumlahAll.toString());
+//        jTxtFldNO_TRANS.setText(kolom2);
+
+    }
+
+    private void tabelModel(JTable jTabel) {
+        try {
+            Object[] field = {"No", "Nama Barang", "Satuan", "QTY", "Harga", "Honor", "Jumlah"};
+            DfltTblMode = new DefaultTableModel(null, field);
+            jTabel.setModel(DfltTblMode);
+
+            String namectg = null;
+
+            System.out.println("id barang : " + namectg);
+//                 CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getName(set.getInt("ctg_barang_id"));
+//                 namectg = jCmbJBTN.get
+            String kolom1 = "";
+            String kolom2 = "";
+            String kolom3 = "";
+            String kolom4 = "";
+            String kolom5 = "";
+
+            String[] data = {kolom1, kolom2, kolom3, kolom4, kolom5};
+            DfltTblMode.addRow(data);
+
             jTabel.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
             column = jTabel.getColumnModel().getColumn(0);
             column.setPreferredWidth(40);
             column = jTabel.getColumnModel().getColumn(1);
             column.setPreferredWidth(156);
             
-            JComboBox comboBox = new JComboBox();
-            comboBox.addItem("Snowboarding");
-            comboBox.addItem("Rowing");
-            comboBox.addItem("Chasing toddlers");
-            comboBox.addItem("Speed reading");
-            comboBox.addItem("Teaching high school");
-            comboBox.addItem("None");
+            final int columns = jTabel.getSelectedColumn();
+            final int rows = jTabel.getSelectedRow();
+
+            final JComboBox comboBox = new JComboBox();
+            String sqls = "Select * from mst_barang limit 10";
+            Statement sts = aplikasiInventory.config.getConnection().createStatement();
+            ResultSet sets = sts.executeQuery(sqls);
+            while (sets.next()) {
+                //namectg = sets.getString("nm_ctg");
+                comboBox.addItem(new DivisiDv(sets.getInt("id"), sets.getString("nm_barang")));
+
+            }
+//            comboBox.addItem("Snowboarding");
+           /*
+             comboBox.setEditable(true);
+             comboBox.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+
+             @Override
+             public void keyTyped(KeyEvent e) {
+             String value = Character.toString(e.getKeyChar()).toUpperCase();
+             listBarang(e, comboBox,columns,rows,DfltTblMode);
+             //                      System.out.println("masuk sini1"+value);
+             //                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+             }
+
+             @Override
+             public void keyPressed(KeyEvent e) {
+             String value = Character.toString(e.getKeyChar()).toUpperCase();
+                    
+                    
+             listBarang(e, comboBox,columns,rows,DfltTblMode);
+             //                      System.out.println("masuk sini2"+value);
+             //                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+             }
+
+             @Override
+             public void keyReleased(KeyEvent e) {
+             String value = Character.toString(e.getKeyChar()).toUpperCase();
+             listBarang(e, comboBox,columns,rows,DfltTblMode);
+             //                      System.out.println("masuk sini3"+value);
+             //                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+             }
+             });
+             // select the completed part
+             JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+             */
 //            AutocompleteJComboBox
             column = jTabel.getColumnModel().getColumn(2);
             column.setCellEditor(new DefaultCellEditor(comboBox));
+//            column.setCellEditor(new MyComboBoxEditor(comboBox));
+//            column.setCellRenderer(new MyComboBoxRenderer(comboBox));
             column.setPreferredWidth(200);
             column = jTabel.getColumnModel().getColumn(3);
             column.setPreferredWidth(200);
             column = jTabel.getColumnModel().getColumn(4);
             column.setPreferredWidth(200);
-          }
-          catch (SQLException e) {
-              JOptionPane.showMessageDialog(this, "Koneksi gagal: " +e);
-          }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Koneksi gagal: " + e);
+        }
     }
-    
+
     private void klikTabel(JTable jTabel) {
         jTabel.setRowSelectionAllowed(true);
-        row = jTabel.getSelectedRow();
-        String kolom1 = jTabel.getValueAt(row,0).toString();
-        String kolom2 = jTabel.getValueAt(row,1).toString();
-        String kolom3 = jTabel.getValueAt(row,2).toString();
+        rows = jTabel.getSelectedRow();
+        String kolom1 = jTabel.getValueAt(rows, 0).toString();
+        String kolom2 = jTabel.getValueAt(rows, 1).toString();
+        int getcol = jTabel.getSelectedColumn();
+        String kolom3 = jTabel.getValueAt(rows, 2).toString();
+        
+//      
+//                column.setCellEditor(new DefaultCellEditor(comboBox));
+//        System.out.println("tes1"+kolom1);jTable1.getColumnModel().getColumn(1)
+        System.out.println("sout " + jTabel.getSelectedColumn());
+        
+        jTabel.getSelectedColumn();
+        Integer rowss = rows3;
        
-        jTxtFldKD_BARANG.setText(kolom2);
+        
+//        System.out.println("sout a " +jTabel.getKeyListeners().toString());
+        if (getcol == 2 || getcol == 1 || getcol == 3) {
+            System.out.println("tes1" + kolom2);
+            jDialog1.setLocationRelativeTo(null);
+            modeljDialogPRD(jTable2, rowss);
+            jDialog1.setVisible(true);
+        }
+//        jTxtFldNO_TRANS.setText(kolom2);
      //   jTxtFldKD_BARANG2.setText(kolom2);
 //        jTxtFldNM_BARANG.setText(kolom3); 
-     //   jTxtFldNM_BARANG2.setText(kolom3); 
-      
+        //   jTxtFldNM_BARANG2.setText(kolom3); 
+
     }
-    
+
     private void kondisiHapus() {
-       e = jTxtFldKD_BARANG.getText();
-            
-       try {
+        e = jTxtFldNO_TRANS.getText();
+
+        try {
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             st.executeUpdate(
-            " delete from mst_barang where id ='"+ e +"'");
+                    " delete from mst_barang where id ='" + e + "'");
             clearTEXT();
             tampilDataKeTabel();
-            
+
             JOptionPane.showMessageDialog(this, "Data berhasil dihapus");
-       }
-        catch (SQLException ex) {
-              JOptionPane.showMessageDialog(this,"Data gagal dihapus: " +ex);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Data gagal dihapus: " + ex);
         }
-    }    
-    
-    private void cari(JTable jTabel){
-    try {
-            Object[] field = {"No","Kode Barang","Nama Barang","Satuan Barang"};
+    }
+
+    private void cari(JTable jTabel) {
+        try {
+            Object[] field = {"No", "Kode Barang", "Nama Barang", "Satuan Barang"};
             DfltTblMode = new DefaultTableModel(null, field);
             jTabel.setModel(DfltTblMode);
-            
-            String sql = "Select * from mst_barang where kd_barang like '%" + jTextField1.getText() + "%'" +
-                         "or nm_barang like '%" + jTextField1.getText() + "%'";
+            String sql = "";
+//            String sql = "Select * from mst_barang where kd_barang like '%" + jTextField1.getText() + "%'" +
+//                         "or nm_barang like '%" + jTextField1.getText() + "%'";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);
 
@@ -286,7 +595,7 @@ public class TransaksiIn extends javax.swing.JFrame {
                 String kolom4 = set.getString("satuan_barang");
                 String[] data = {kolom1, kolom2, kolom3, kolom4};
                 DfltTblMode.addRow(data);
-                
+
             }
             jTabel.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
             column = jTabel.getColumnModel().getColumn(0);
@@ -297,12 +606,11 @@ public class TransaksiIn extends javax.swing.JFrame {
             column.setPreferredWidth(200);
             column = jTabel.getColumnModel().getColumn(3);
             column.setPreferredWidth(200);
-            }
-          catch (SQLException e) {
-              JOptionPane.showMessageDialog(this, "Koneksi gagal: " +e);
-          }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Koneksi gagal: " + e);
+        }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -312,32 +620,91 @@ public class TransaksiIn extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jBtnOk = new javax.swing.JButton();
+        jBtnKembali = new javax.swing.JButton();
         jlblKD_BARANG = new javax.swing.JLabel();
         jlblNM_BARANG = new javax.swing.JLabel();
         jlblxKD_BARANG = new javax.swing.JLabel();
         jlblxNM_BARANG = new javax.swing.JLabel();
-        jTxtFldKD_BARANG = new javax.swing.JTextField();
+        jTxtFldNO_TRANS = new javax.swing.JTextField();
         jBtnSave = new javax.swing.JButton();
         jBtnEdit = new javax.swing.JButton();
         jBtnDlt = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jBtnNew = new javax.swing.JButton();
-        jTxtFldKD_BARANG2 = new javax.swing.JTextField();
         jBtnSave2 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jBtnCari = new javax.swing.JButton();
         jCmbJBTN = new javax.swing.JComboBox();
         jlblJBTN = new javax.swing.JLabel();
         jlblxJBTN = new javax.swing.JLabel();
         jlblJBTN2 = new javax.swing.JLabel();
         jlblxJBTN1 = new javax.swing.JLabel();
-        jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMnKembali = new javax.swing.JMenu();
+
+        jDialog1.setMinimumSize(new java.awt.Dimension(370, 600));
+        jDialog1.setModal(true);
+        jDialog1.setResizable(false);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jTable2.setMinimumSize(new java.awt.Dimension(200, 64));
+        jScrollPane3.setViewportView(jTable2);
+
+        jBtnOk.setText("Ok");
+        jBtnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnOkActionPerformed(evt);
+            }
+        });
+
+        jBtnKembali.setText("Kembali");
+        jBtnKembali.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnKembaliActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jBtnKembali)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBtnOk)
+                .addContainerGap())
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBtnOk)
+                    .addComponent(jBtnKembali))
+                .addContainerGap())
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Form Pemasukan Barang");
@@ -355,6 +722,12 @@ public class TransaksiIn extends javax.swing.JFrame {
         jlblxKD_BARANG.setText(":");
 
         jlblxNM_BARANG.setText(":");
+
+        jTxtFldNO_TRANS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtFldNO_TRANSActionPerformed(evt);
+            }
+        });
 
         jBtnSave.setText("Simpan");
         jBtnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -379,10 +752,7 @@ public class TransaksiIn extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, "", null, null, null, null, null}
             },
             new String [] {
                 "No", "Nama Barang", "Satuan", "Banyaknya", "Harga", "Honor", "Jumlah"
@@ -422,21 +792,6 @@ public class TransaksiIn extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Cari Data Berdasarkan Kode / Nama Barang :");
-
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField1KeyTyped(evt);
-            }
-        });
-
-        jBtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/search.png"))); // NOI18N
-        jBtnCari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnCariActionPerformed(evt);
-            }
-        });
-
         jCmbJBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCmbJBTNActionPerformed(evt);
@@ -454,6 +809,17 @@ public class TransaksiIn extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
+
+        jButton1.setText("Add Item");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Total :");
+
+        jLabel2.setText("0");
 
         jMenuBar1.setBackground(new java.awt.Color(236, 236, 236));
         jMenuBar1.setName(""); // NOI18N
@@ -493,13 +859,10 @@ public class TransaksiIn extends javax.swing.JFrame {
                                     .addComponent(jlblxJBTN1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jTxtFldKD_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTxtFldKD_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jTxtFldNO_TRANS, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jBtnNew)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -509,15 +872,14 @@ public class TransaksiIn extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jBtnEdit)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jBtnDlt)))
-                        .addGap(0, 119, Short.MAX_VALUE))
+                                .addComponent(jBtnDlt))
+                            .addComponent(jButton1))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -526,9 +888,8 @@ public class TransaksiIn extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlblxKD_BARANG)
-                    .addComponent(jTxtFldKD_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlblKD_BARANG)
-                    .addComponent(jTxtFldKD_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTxtFldNO_TRANS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlblKD_BARANG))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlblxNM_BARANG)
@@ -546,14 +907,14 @@ public class TransaksiIn extends javax.swing.JFrame {
                         .addComponent(jlblJBTN2))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jBtnSave)
@@ -571,38 +932,38 @@ public class TransaksiIn extends javax.swing.JFrame {
 
     private void jMnKembaliMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnKembaliMousePressed
         // TODO add your handling code here:
-        new start().setVisible(true);
+        new listTransaksiIn().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnKembaliMousePressed
 
     private void jBtnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnNewActionPerformed
         // TODO add your handling code here:
-       clearTEXT(); 
-       enableField(true);
-       enableBtn(false);
-       enviBtnSave(true);
-       enviBtnSave2(false);
-       enviBtnNew(false);
-       jTxtFldKD_BARANG.requestFocus();
+        clearTEXT();
+        enableField(true);
+        enableBtn(false);
+        enviBtnSave(true);
+        enviBtnSave2(false);
+        enviBtnNew(false);
+        jTxtFldNO_TRANS.requestFocus();
     }//GEN-LAST:event_jBtnNewActionPerformed
 
     private void jBtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSaveActionPerformed
         // TODO add your handling code here:
-       kondisiSave();
-       enableField(false);
-       enableBtn(true);
-       enviBtnSave(false);
-       enviBtnSave2(false);
-       enviBtnNew(true);
+        kondisiSave();
+        enableField(true);
+        enableBtn(true);
+        enviBtnSave(true);
+        enviBtnSave2(false);
+        enviBtnNew(true);
     }//GEN-LAST:event_jBtnSaveActionPerformed
 
     private void jBtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEditActionPerformed
         // TODO add your handling code here:
-       enableField(true);
-       enableBtn(false);
-       enviBtnSave(false);
-       enviBtnSave2(true);
-       enviBtnNew(false);
+        enableField(true);
+        enableBtn(false);
+        enviBtnSave(false);
+        enviBtnSave2(true);
+        enviBtnNew(false);
     }//GEN-LAST:event_jBtnEditActionPerformed
 
     private void jBtnDltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDltActionPerformed
@@ -616,28 +977,24 @@ public class TransaksiIn extends javax.swing.JFrame {
 
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
         // TODO add your handling code here:
-       klikTabel(jTabel);
-       enableField(false);
-       enableBtn(true);
-       enviBtnSave(false);
-       enviBtnSave2(false);
-       enviBtnNew(true);
+        
+        klikTabel(jTable1);
+        enableField(true);
+        enableBtn(true);
+        enviBtnSave(true);
+        enviBtnSave2(false);
+        enviBtnNew(true);
     }//GEN-LAST:event_jTable1MousePressed
 
     private void jBtnSave2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSave2ActionPerformed
         // TODO add your handling code here:
-       kondisiEdit();
-       enableField(false);
-       enableBtn(false);
-       enviBtnSave(false);
-       enviBtnSave2(false);
-       enviBtnNew(true);
+        kondisiEdit();
+        enableField(false);
+        enableBtn(false);
+        enviBtnSave(false);
+        enviBtnSave2(false);
+        enviBtnNew(true);
     }//GEN-LAST:event_jBtnSave2ActionPerformed
-
-    private void jBtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCariActionPerformed
-        // TODO add your handling code here:
-        tampilDataKeTabelcari();
-    }//GEN-LAST:event_jBtnCariActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
@@ -645,17 +1002,42 @@ public class TransaksiIn extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_formWindowClosing
 
-    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
-        // TODO add your handling code here:
-        if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
-            jBtnCari.doClick();
-        }            
-    }//GEN-LAST:event_jTextField1KeyTyped
-
     private void jCmbJBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCmbJBTNActionPerformed
         // TODO add your handling code here:
         //        listSatuan();
     }//GEN-LAST:event_jCmbJBTNActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        addItem(models);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jBtnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnOkActionPerformed
+        // TODO add your handling code here:
+        if (jTable2.getSelectedRow() != -1) {
+            klikTabeljDialog(jTable2);
+            jDialog1.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Tidak ada data yang dipilih!");
+        }
+    }//GEN-LAST:event_jBtnOkActionPerformed
+
+    private void jBtnKembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnKembaliActionPerformed
+        // TODO add your handling code here:
+        jDialog1.dispose();
+    }//GEN-LAST:event_jBtnKembaliActionPerformed
+
+    private void jXDatePicker1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jXDatePicker1ActionPerformed
+        // TODO add your handling code here:
+//        System.out.println("tes date "+jXDatePicker1.getFormats());
+        
+        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(dt1.format(jXDatePicker1.getDate()));
+    }//GEN-LAST:event_jXDatePicker1ActionPerformed
+
+    private void jTxtFldNO_TRANSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtFldNO_TRANSActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTxtFldNO_TRANSActionPerformed
 
     /**
      * @param args the command line arguments
@@ -702,23 +1084,27 @@ public class TransaksiIn extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jBtnCari;
     private javax.swing.JButton jBtnDlt;
     private javax.swing.JButton jBtnEdit;
+    private javax.swing.JButton jBtnKembali;
     private javax.swing.JButton jBtnNew;
+    private javax.swing.JButton jBtnOk;
     private javax.swing.JButton jBtnSave;
     private javax.swing.JButton jBtnSave2;
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jCmbJBTN;
+    private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMnKembali;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTxtFldKD_BARANG;
-    private javax.swing.JTextField jTxtFldKD_BARANG2;
+    private javax.swing.JTextField jTxtFldNO_TRANS;
     private org.jdesktop.swingx.JXDatePicker jXDatePicker1;
     private javax.swing.JLabel jlblJBTN;
     private javax.swing.JLabel jlblJBTN2;

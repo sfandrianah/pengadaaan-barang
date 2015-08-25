@@ -23,6 +23,7 @@ public class product extends javax.swing.JFrame {
     private TableColumn column;   
     private String e,r,i,k,a,satuan;
     private int idcategory;
+    private Double hrg_jual,hrg_beli;
     
     public product() {
         initComponents();
@@ -125,6 +126,9 @@ public class product extends javax.swing.JFrame {
        CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
        idcategory = category.getId();
        satuan = jCmbJBTN2.getSelectedItem().toString();
+       hrg_beli = Double.valueOf(jTxtFldHRG_BELI.getText());
+       hrg_jual = Double.valueOf(jTxtFldHRG_JUAL.getText());
+       
        
        try {
        if (r.equals("") || i.equals("")) 
@@ -136,7 +140,7 @@ public class product extends javax.swing.JFrame {
                  Statement st = aplikasiInventory.config.getConnection().createStatement();  
                  st.executeUpdate(
                        "insert into mst_barang"+
-                       "(kd_barang, nm_barang,status,satuan_barang,ctg_barang_id) values ('"+ r +"','"+ i +"','A','"+satuan+"','"+idcategory+"')" );
+                       "(kd_barang, nm_barang,status,satuan_barang,ctg_barang_id,hrg_jual_barang,hrg_beli_barang) values ('"+ r +"','"+ i +"','A','"+satuan+"','"+idcategory+"',"+hrg_jual+","+hrg_beli+")" );
                  
                  tampilDataKeTabel();      
                  JOptionPane.showMessageDialog(this,"Data berhasil disimpan");
@@ -182,7 +186,7 @@ public class product extends javax.swing.JFrame {
     
     private void tabelModel(JTable jTabel) {
         try {
-            Object[] field = {"No","Kode Barang","Nama Barang","Category Barang", "Satuan Barang"};
+            Object[] field = {"No","Kode Barang","Nama Barang","Category Barang", "Satuan Barang", "Harga Beli", "Harga Jual"};
             DfltTblMode = new DefaultTableModel(null, field);
             jTabel.setModel(DfltTblMode);
             
@@ -210,8 +214,10 @@ public class product extends javax.swing.JFrame {
                 String kolom3 = set.getString("nm_barang");
                 String kolom4 = namectg;
                 String kolom5 = set.getString("satuan_barang");
+                String kolom6 = String.valueOf(set.getDouble("hrg_beli_barang"));
+                String kolom7 = String.valueOf(set.getDouble("hrg_jual_barang"));
            
-                String[] data = {kolom1, kolom2, kolom3, kolom4,kolom5};
+                String[] data = {kolom1, kolom2, kolom3, kolom4,kolom5,kolom6,kolom7};
                 DfltTblMode.addRow(data);
             }
             
@@ -333,6 +339,12 @@ public class product extends javax.swing.JFrame {
         jlblJBTN2 = new javax.swing.JLabel();
         jCmbJBTN2 = new javax.swing.JComboBox();
         jlblxJBTN1 = new javax.swing.JLabel();
+        jlblJBTN1 = new javax.swing.JLabel();
+        jlblxNM_BARANG1 = new javax.swing.JLabel();
+        jTxtFldHRG_JUAL = new javax.swing.JTextField();
+        jlblxNM_BARANG2 = new javax.swing.JLabel();
+        jTxtFldHRG_BELI = new javax.swing.JTextField();
+        jlblJBTN4 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMnKembali = new javax.swing.JMenu();
 
@@ -467,6 +479,30 @@ public class product extends javax.swing.JFrame {
 
         jlblxJBTN1.setText(":");
 
+        jlblJBTN1.setText("Harga Jual*");
+
+        jlblxNM_BARANG1.setText(":");
+
+        jTxtFldHRG_JUAL.setText("0");
+        jTxtFldHRG_JUAL.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jTxtFldHRG_JUAL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtFldHRG_JUALActionPerformed(evt);
+            }
+        });
+
+        jlblxNM_BARANG2.setText(":");
+
+        jTxtFldHRG_BELI.setText("0");
+        jTxtFldHRG_BELI.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jTxtFldHRG_BELI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtFldHRG_BELIActionPerformed(evt);
+            }
+        });
+
+        jlblJBTN4.setText("Harga Jual*");
+
         jMenuBar1.setBackground(new java.awt.Color(236, 236, 236));
         jMenuBar1.setName(""); // NOI18N
 
@@ -497,19 +533,31 @@ public class product extends javax.swing.JFrame {
                         .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jBtnNew)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBtnSave)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBtnSave2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBtnEdit)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jBtnDlt))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jlblKD_BARANG)
                                     .addComponent(jlblNM_BARANG)
                                     .addComponent(jlblJBTN)
-                                    .addComponent(jlblJBTN2))
+                                    .addComponent(jlblJBTN2)
+                                    .addComponent(jlblJBTN1))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jlblxNM_BARANG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jlblxKD_BARANG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jlblxJBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jlblxJBTN1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jlblxNM_BARANG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlblxKD_BARANG, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlblxJBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jlblxJBTN1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jlblxNM_BARANG1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -521,17 +569,17 @@ public class product extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jTxtFldNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jBtnNew)
+                                    .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTxtFldHRG_JUAL, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jlblJBTN4)
+                                    .addComponent(jlblKD_BARANG))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jlblxNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jBtnSave)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jBtnSave2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jBtnEdit)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jBtnDlt)))
+                                .addComponent(jTxtFldHRG_BELI, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(124, 124, 124)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -539,28 +587,41 @@ public class product extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlblxKD_BARANG)
-                    .addComponent(jTxtFldKD_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlblKD_BARANG)
-                    .addComponent(jTxtFldKD_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTxtFldNM_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlblxNM_BARANG)
-                    .addComponent(jlblNM_BARANG)
-                    .addComponent(jTxtFldNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlblxJBTN)
-                    .addComponent(jlblJBTN)
-                    .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlblxJBTN1)
-                    .addComponent(jlblJBTN2)
-                    .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jlblxKD_BARANG)
+                            .addComponent(jTxtFldKD_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTxtFldKD_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTxtFldNM_BARANG, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlblxNM_BARANG)
+                            .addComponent(jlblNM_BARANG)
+                            .addComponent(jTxtFldNM_BARANG2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jlblxJBTN)
+                            .addComponent(jlblJBTN)
+                            .addComponent(jCmbJBTN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jlblxJBTN1)
+                            .addComponent(jlblJBTN2)
+                            .addComponent(jCmbJBTN2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jlblJBTN1)
+                            .addComponent(jlblxNM_BARANG1)
+                            .addComponent(jTxtFldHRG_JUAL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jlblxNM_BARANG2)
+                                .addComponent(jlblKD_BARANG))
+                            .addComponent(jTxtFldHRG_BELI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jlblJBTN4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -568,7 +629,7 @@ public class product extends javax.swing.JFrame {
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jBtnSave)
@@ -680,6 +741,14 @@ public class product extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTxtFldNM_BARANGActionPerformed
 
+    private void jTxtFldHRG_JUALActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtFldHRG_JUALActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTxtFldHRG_JUALActionPerformed
+
+    private void jTxtFldHRG_BELIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtFldHRG_BELIActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTxtFldHRG_BELIActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -737,17 +806,23 @@ public class product extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTxtFldHRG_BELI;
+    private javax.swing.JTextField jTxtFldHRG_JUAL;
     private javax.swing.JTextField jTxtFldKD_BARANG;
     private javax.swing.JTextField jTxtFldKD_BARANG2;
     private javax.swing.JTextField jTxtFldNM_BARANG;
     private javax.swing.JTextField jTxtFldNM_BARANG2;
     private javax.swing.JLabel jlblJBTN;
+    private javax.swing.JLabel jlblJBTN1;
     private javax.swing.JLabel jlblJBTN2;
+    private javax.swing.JLabel jlblJBTN4;
     private javax.swing.JLabel jlblKD_BARANG;
     private javax.swing.JLabel jlblNM_BARANG;
     private javax.swing.JLabel jlblxJBTN;
     private javax.swing.JLabel jlblxJBTN1;
     private javax.swing.JLabel jlblxKD_BARANG;
     private javax.swing.JLabel jlblxNM_BARANG;
+    private javax.swing.JLabel jlblxNM_BARANG1;
+    private javax.swing.JLabel jlblxNM_BARANG2;
     // End of variables declaration//GEN-END:variables
 }

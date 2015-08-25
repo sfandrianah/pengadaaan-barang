@@ -3,6 +3,7 @@ package com.pengadaan.barang;
 import com.pengadaan.barang.kategory.kategori;
 import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.transaksi_in.TransaksiIn;
+import com.pengadaan.barang.transaksi_in.listTransaksiIn;
 import javax.swing.JOptionPane;
 
 public class start extends javax.swing.JFrame {
@@ -165,7 +166,7 @@ public class start extends javax.swing.JFrame {
 
     private void jMnItmTRN_INMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmTRN_INMousePressed
         // TODO add your handling code here:        
-        new TransaksiIn().setVisible(true);
+        new listTransaksiIn().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnItmTRN_INMousePressed
 
