@@ -68,6 +68,25 @@ public class TransaksiIn extends javax.swing.JFrame {
        // panel.add(picker);
         // listSatuan();
     }
+    
+    private void keyEventAll(KeyEvent key){
+        String test = "";
+        
+        test = String.valueOf(key.getKeyChar());
+        jTextField1.setEnabled(true);
+        String jtf1 = jTextField1.getText();
+        
+        String test2 = jtf1+test;
+        
+        Double hasil = 0D;
+        System.out.println(jtf1);
+//        System.out.println(jTextField2.getText());
+        hasil = Double.parseDouble(test2) * Double.parseDouble(jTextField2.getText());
+        jTextField5.setEnabled(true);
+//        jLabel16.sete
+        jTextField5.setText(hasil.toString());
+        
+    }
 
     private void listDivisi() {
 
@@ -81,6 +100,137 @@ public class TransaksiIn extends javax.swing.JFrame {
             while (set.next()) {
                 jCmbJBTN.addItem(new DivisiDv(set.getInt("id"), set.getString("name")));
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+    private void listSatuan(){
+//        jCmbJBTN2.removeAllItems();
+        
+       
+        
+            
+        try {
+            CategoryBarangDv categoryDv = (CategoryBarangDv) jComboBox1.getSelectedItem();
+            if (categoryDv.getId() != 0) {
+
+                String sql = "Select * from mst_barang where id=" + categoryDv.getId();
+                Statement st;
+
+                st = aplikasiInventory.config.getConnection().createStatement();
+
+                ResultSet set;
+                set = st.executeQuery(sql);
+                int no = 0;
+                String text = "";
+                String price = "";
+                while (set.next()) {
+                    text = set.getString("satuan_barang");
+                    System.out.println("set " + set.getString("satuan_barang"));
+                    price = String.valueOf(set.getDouble("hrg_jual_barang"));
+
+                }
+                jTextField4.setEnabled(true);
+                jTextField4.setText(text);
+                jTextField2.setEnabled(true);
+                jTextField2.setText(price);
+
+                String test = "";
+
+//        test = String.valueOf(key.getKeyChar());
+                jTextField1.setEnabled(true);
+                String jtf1 = jTextField1.getText();
+
+                String test2 = jtf1;
+
+                Double hasil = 0D;
+                System.out.println(jtf1);
+//        System.out.println(jTextField2.getText());
+                hasil = Double.parseDouble(test2) * Double.parseDouble(jTextField2.getText());
+                jTextField5.setEnabled(true);
+//        jLabel16.sete
+                jTextField5.setText(hasil.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        
+        
+            
+    }
+    
+    private void keyListBarang(KeyEvent key){
+//        String sending;
+//        CategoryBarangDv categoryDv = (CategoryBarangDv) jComboBox1.getSelectedItem();
+//        String getNames = categoryDv.getName();
+//        sending = getNames + String.valueOf(e.getKeyChar());
+        
+        JTextComponent text = (JTextComponent) this.jComboBox1.getEditor().getEditorComponent();
+        String str = (String) text.getText();
+        System.out.println(str);
+        jComboBox1.removeAllItems();
+        try {
+            String sql = "Select * from mst_barang where nm_barang like '%"+str+"%'";
+            Statement st;
+
+            st = aplikasiInventory.config.getConnection().createStatement();
+
+            ResultSet set;
+            set = st.executeQuery(sql);
+            int no = 0;
+            jComboBox1.addItem(new CategoryBarangDv(0, ""));
+            while (set.next()) {
+                jComboBox1.addItem(new CategoryBarangDv(set.getInt("id"), set.getString("nm_barang")));
+            }
+            text.setText(str);
+        } catch (SQLException ex) {
+            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void listBarang() {
+         jComboBox1.removeAllItems();
+        try {
+
+            String sql = "Select * from mst_barang";
+            Statement st = aplikasiInventory.config.getConnection().createStatement();
+            ResultSet set;
+            set = st.executeQuery(sql);
+            int no = 0;
+            jComboBox1.addItem(new CategoryBarangDv(0, ""));
+            while (set.next()) {
+                jComboBox1.addItem(new CategoryBarangDv(set.getInt("id"), set.getString("nm_barang")));
+            }
+            
+            jComboBox1.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+//                    keyListBarang(e);
+                //    System.out.println("masuk 1");
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+//                    keyListBarang(e);
+//                    System.out.println("masuk 2");
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    keyListBarang(e);
+//                    System.out.println("masuk 3");
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+            });
+            
+            
         } catch (SQLException ex) {
             Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -273,6 +423,7 @@ public class TransaksiIn extends javax.swing.JFrame {
         models.addColumn("Harga");
         models.addColumn("Honor");
         models.addColumn("Jumlah");
+     
 
     }
 
@@ -338,32 +489,23 @@ public class TransaksiIn extends javax.swing.JFrame {
         jTable1.setValueAt(kolom6, rows, 5);
     }
 
-    private void addItem(DefaultTableModel model) {
-//        ItemDv itemDv = new ItemDv(0, 0,"tes",0, 0, 0, 0);
+    private void klikButtonItem(DefaultTableModel model){
 
         int no = model.getRowCount() + 1;
+        CategoryBarangDv categoryDv = (CategoryBarangDv) jComboBox1.getSelectedItem();
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         jTable1.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-//        Vector<ItemDv> vector = new Vector<ItemDv>();
-//        ItemDv itemDv = new ItemDv();
-
-        model.addRow(new Object[]{String.valueOf(no), "", "", "", "", "0", "0", "0"});
-//        model.isCellEditable(1, 2);
-       
+//        jTable1.(false);
         
+        model.addRow(new Object[]{String.valueOf(no), String.valueOf(categoryDv.getId()), categoryDv.getName(), jTextField4.getText(), jTextField1.getText(), jTextField2.getText(), jTextField3.getText(), jTextField5.getText()});
+       
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         column = jTable1.getColumnModel().getColumn(0);
         column.setPreferredWidth(50);
        
-       
-        
-        
         column = jTable1.getColumnModel().getColumn(1);
         column.setPreferredWidth(10);
-//            jTable1.add
-//            column.setCellEditor(new DefaultCellEditor(comboBox));
-        
         
         column = jTable1.getColumnModel().getColumn(2);
         column.setPreferredWidth(150);
@@ -372,36 +514,6 @@ public class TransaksiIn extends javax.swing.JFrame {
         column.setPreferredWidth(70);
         column = jTable1.getColumnModel().getColumn(4);
         column.setPreferredWidth(50);
-        JTextField jtey = new JTextField();
-        
-        jtey.setEditable(true);
-//        jtey.setEnabled(false);
-        jtey.addKeyListener(new KeyListener() {
-        String test = "";
-            @Override
-            public void keyTyped(KeyEvent e) {
-                
-                test = test + String.valueOf(e.getKeyChar());
-                keyupTable(jTable1,test);
-                System.out.println(test);
-//                System.out.println("masuk sini");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-//                System.out.println("masuk sini");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-        //        System.out.println("masuk sini");
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-            
-        });
-        column.setCellEditor(new DefaultCellEditor(jtey));
         
         column = jTable1.getColumnModel().getColumn(5);
         column.setPreferredWidth(150);
@@ -409,6 +521,45 @@ public class TransaksiIn extends javax.swing.JFrame {
         column.setPreferredWidth(150);
         column = jTable1.getColumnModel().getColumn(7);
         column.setPreferredWidth(150);
+    }
+    
+    
+     private void klikUpdateItem(DefaultTableModel model){
+
+        int no = model.getRowCount() + 1;
+        CategoryBarangDv categoryDv = (CategoryBarangDv) jComboBox1.getSelectedItem();
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        jTable1.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+//        jTable1.(false);
+        
+        
+        model.setValueAt(String.valueOf(categoryDv.getId()), rows, 1);
+        model.setValueAt(categoryDv.getName(), rows,2);
+        model.setValueAt(jTextField4.getText(), rows,3);
+        model.setValueAt(jTextField1.getText(), rows,4);
+        model.setValueAt(jTextField2.getText(), rows,5);
+        model.setValueAt(jTextField3.getText(), rows,6);
+        model.setValueAt(jTextField5.getText(), rows,7);
+        
+    }
+    
+    private void addItem(DefaultTableModel model) {
+//        ItemDv itemDv = new ItemDv(0, 0,"tes",0, 0, 0, 0);
+
+//        if (getcol == 2 || getcol == 1 || getcol == 3) {
+//            System.out.println("tes1" + kolom2);
+            jDialog2.setLocationRelativeTo(null);
+//            modeljDialogPRD(jTable2, rowss);
+            listBarang();
+            jBtnOk2.setEnabled(true);
+            jBtnKembali2.setEnabled(true);
+             jBtnOk2.setVisible(false);
+            jBtnKembali2.setVisible(false);
+//            jBtnOk2.setEnabled(false);
+            jDialog2.setVisible(true);
+//        }
+        
     
     }
     
@@ -529,12 +680,29 @@ public class TransaksiIn extends javax.swing.JFrame {
     }
 
     private void klikTabel(JTable jTabel) {
+        jDialog2.setLocationRelativeTo(null);
+        jBtnKembali2.setVisible(true);
+        jBtnOk2.setVisible(true);
+        jBtnKembali1.setVisible(false);
+        jBtnOk1.setVisible(false);
         jTabel.setRowSelectionAllowed(true);
         rows = jTabel.getSelectedRow();
         String kolom1 = jTabel.getValueAt(rows, 0).toString();
         String kolom2 = jTabel.getValueAt(rows, 1).toString();
         int getcol = jTabel.getSelectedColumn();
         String kolom3 = jTabel.getValueAt(rows, 2).toString();
+        String kolom4 = jTabel.getValueAt(rows, 3).toString();
+        String kolom5 = jTabel.getValueAt(rows, 4).toString();
+        String kolom6 = jTabel.getValueAt(rows, 5).toString();
+        String kolom7 = jTabel.getValueAt(rows, 6).toString();
+        String kolom8 = jTabel.getValueAt(rows, 7).toString();
+        
+        jTextField4.setText(kolom4);
+        jTextField1.setText(kolom5);
+        jTextField2.setText(kolom6);
+        jTextField3.setText(kolom7);
+        jTextField5.setText(kolom8);
+        
         
 //      
 //                column.setCellEditor(new DefaultCellEditor(comboBox));
@@ -543,15 +711,17 @@ public class TransaksiIn extends javax.swing.JFrame {
         
         jTabel.getSelectedColumn();
         Integer rowss = rows3;
+        
+        jDialog2.setVisible(true);
        
         
 //        System.out.println("sout a " +jTabel.getKeyListeners().toString());
-        if (getcol == 2 || getcol == 1 || getcol == 3) {
+    /*    if (getcol == 2 || getcol == 1 || getcol == 3) {
             System.out.println("tes1" + kolom2);
             jDialog1.setLocationRelativeTo(null);
             modeljDialogPRD(jTable2, rowss);
             jDialog1.setVisible(true);
-        }
+        } */
 //        jTxtFldNO_TRANS.setText(kolom2);
      //   jTxtFldKD_BARANG2.setText(kolom2);
 //        jTxtFldNM_BARANG.setText(kolom3); 
@@ -625,6 +795,29 @@ public class TransaksiIn extends javax.swing.JFrame {
         jTable2 = new javax.swing.JTable();
         jBtnOk = new javax.swing.JButton();
         jBtnKembali = new javax.swing.JButton();
+        jDialog2 = new javax.swing.JDialog();
+        jBtnOk1 = new javax.swing.JButton();
+        jBtnKembali1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
+        jBtnOk2 = new javax.swing.JButton();
+        jBtnKembali2 = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
         jlblKD_BARANG = new javax.swing.JLabel();
         jlblNM_BARANG = new javax.swing.JLabel();
         jlblxKD_BARANG = new javax.swing.JLabel();
@@ -703,6 +896,194 @@ public class TransaksiIn extends javax.swing.JFrame {
                 .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBtnOk)
                     .addComponent(jBtnKembali))
+                .addContainerGap())
+        );
+
+        jDialog2.setMinimumSize(new java.awt.Dimension(370, 600));
+        jDialog2.setModal(true);
+        jDialog2.setResizable(false);
+
+        jBtnOk1.setText("Save");
+        jBtnOk1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnOk1ActionPerformed(evt);
+            }
+        });
+
+        jBtnKembali1.setText("Kembali");
+        jBtnKembali1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnKembali1ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Nama Barang");
+
+        jLabel4.setText(":");
+
+        jComboBox1.setEditable(true);
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText(":");
+
+        jLabel6.setText("Satuan");
+
+        jLabel8.setText("Quantity");
+
+        jLabel9.setText(":");
+
+        jTextField1.setText("0");
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
+
+        jLabel10.setText("Honor");
+
+        jLabel11.setText(":");
+
+        jTextField2.setText("0");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Harga");
+
+        jTextField3.setText("0");
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setText("Jumlah");
+
+        jTextField4.setEditable(false);
+
+        jTextField5.setEditable(false);
+
+        jBtnOk2.setText("Update");
+        jBtnOk2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnOk2ActionPerformed(evt);
+            }
+        });
+
+        jBtnKembali2.setText("Hapus");
+        jBtnKembali2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnKembali2ActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setText(":");
+
+        jLabel17.setText(":");
+
+        javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
+        jDialog2.getContentPane().setLayout(jDialog2Layout);
+        jDialog2Layout.setHorizontalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jDialog2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                        .addGap(0, 149, Short.MAX_VALUE)
+                        .addComponent(jBtnKembali2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBtnKembali1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jBtnOk1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jBtnOk2)
+                        .addGap(8, 8, 8))
+                    .addGroup(jDialog2Layout.createSequentialGroup()
+                        .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jDialog2Layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jDialog2Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jDialog2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(37, 37, 37)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jDialog2Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        jDialog2Layout.setVerticalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDialog2Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel16))
+                    .addGroup(jDialog2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBtnOk1)
+                    .addComponent(jBtnKembali1)
+                    .addComponent(jBtnOk2)
+                    .addComponent(jBtnKembali2))
                 .addContainerGap())
         );
 
@@ -874,13 +1255,14 @@ public class TransaksiIn extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jBtnDlt))
                             .addComponent(jButton1))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1009,7 +1391,15 @@ public class TransaksiIn extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        
         addItem(models);
+        jBtnKembali2.setVisible(false);
+        jBtnOk2.setVisible(false);
+        jBtnKembali1.setVisible(true);
+        jBtnOk1.setVisible(true);
+        jBtnNew.setVisible(false);
+        jBtnEdit.setVisible(false);
+        jBtnDlt.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jBtnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnOkActionPerformed
@@ -1038,6 +1428,64 @@ public class TransaksiIn extends javax.swing.JFrame {
     private void jTxtFldNO_TRANSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtFldNO_TRANSActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTxtFldNO_TRANSActionPerformed
+
+    private void jBtnKembali2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnKembali2ActionPerformed
+        // TODO add your handling code here:
+        //        removeOneRow(models);
+        models.removeRow(rows);
+        jBtnNew.setVisible(false);
+        jBtnEdit.setVisible(false);
+        jBtnDlt.setVisible(false);
+        jDialog2.dispose();
+    }//GEN-LAST:event_jBtnKembali2ActionPerformed
+
+    private void jBtnOk2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnOk2ActionPerformed
+        // TODO add your handling code here:
+        klikUpdateItem(models);
+
+        jBtnNew.setVisible(false);
+        jBtnEdit.setVisible(false);
+        jBtnDlt.setVisible(false);
+        jDialog2.dispose();
+    }//GEN-LAST:event_jBtnOk2ActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        // TODO add your handling code here:
+        keyEventAll(evt);
+    }//GEN-LAST:event_jTextField1KeyTyped
+
+    private void jBtnKembali1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnKembali1ActionPerformed
+        // TODO add your handling code here:
+        jBtnNew.setVisible(false);
+        jBtnEdit.setVisible(false);
+        jBtnDlt.setVisible(false);
+        jDialog2.dispose();
+    }//GEN-LAST:event_jBtnKembali1ActionPerformed
+
+    private void jBtnOk1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnOk1ActionPerformed
+        // TODO add your handling code here:
+        klikButtonItem(models);
+        jDialog2.dispose();
+        jBtnNew.setVisible(false);
+        jBtnEdit.setVisible(false);
+        jBtnDlt.setVisible(false);
+
+    }//GEN-LAST:event_jBtnOk1ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        jComboBox1.setEnabled(true);
+        jComboBox1.setEditable(true);
+        listSatuan();
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1087,15 +1535,33 @@ public class TransaksiIn extends javax.swing.JFrame {
     private javax.swing.JButton jBtnDlt;
     private javax.swing.JButton jBtnEdit;
     private javax.swing.JButton jBtnKembali;
+    private javax.swing.JButton jBtnKembali1;
+    private javax.swing.JButton jBtnKembali2;
     private javax.swing.JButton jBtnNew;
     private javax.swing.JButton jBtnOk;
+    private javax.swing.JButton jBtnOk1;
+    private javax.swing.JButton jBtnOk2;
     private javax.swing.JButton jBtnSave;
     private javax.swing.JButton jBtnSave2;
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jCmbJBTN;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JDialog jDialog2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMnKembali;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1104,6 +1570,11 @@ public class TransaksiIn extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTxtFldNO_TRANS;
     private org.jdesktop.swingx.JXDatePicker jXDatePicker1;
     private javax.swing.JLabel jlblJBTN;

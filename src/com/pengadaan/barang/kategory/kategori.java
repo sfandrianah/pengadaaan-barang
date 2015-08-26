@@ -212,6 +212,7 @@ public class kategori extends javax.swing.JFrame {
         String kolom1 = jTabel.getValueAt(row,0).toString();
         String kolom2 = jTabel.getValueAt(row,1).toString();
         String kolom3 = jTabel.getValueAt(row,2).toString();
+//        String kolom4 = jTabel.getValueAt(row,2).toString();
         jTxtFldKD_CTGRY.setText(kolom2);
         jTxtFldKD_CTGRY2.setText(kolom2);
         jTxtFldNM_CTGRY.setText(kolom3); 

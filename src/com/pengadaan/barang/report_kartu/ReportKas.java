@@ -1,13 +1,18 @@
-package com.pengadaan.barang.transaksi_in;
+package com.pengadaan.barang.report_kartu;
 
+import com.pengadaan.barang.transaksi_in.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
+import com.pengadaan.barang.produk.CategoryBarangDv;
+import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.start;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -16,34 +21,59 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
-public class listTransaksiIn extends javax.swing.JFrame {
+public class ReportKas extends javax.swing.JFrame {
 
     private Integer row;
     private PengadaanBarang aplikasiInventory = new PengadaanBarang();
     private JTable jTabel = new JTable();
     private DefaultTableModel DfltTblMode;
     private TableColumn column;   
-    private String e,r,i,k,a;
+    private String e,r,i,k,a,startdate,enddate;
+    private int idcategory;
     
-    public listTransaksiIn() {
+    public ReportKas() {
         initComponents();
         aplikasiInventory.konekkeDatabase();
-        tampilDataKeTabel();
+//        tampilDataKeTabel();
         enableBtn(false);
         enviBtnSave(true);
         enviBtnSave2(false);
         enviBtnNew(true);
 //        jBtnNew.setEnabled(true);
         
-      
-       listTypeBarang();
+      jXDatePicker1.setDate(Calendar.getInstance().getTime());
+        jXDatePicker1.setFormats(new SimpleDateFormat("yyyy-MM-dd"));
+        jXDatePicker2.setDate(Calendar.getInstance().getTime());
+        jXDatePicker2.setFormats(new SimpleDateFormat("yyyy-MM-dd"));
+       listCategoryBarang();
         
         
 
        
         
+    }
+    
+    private void listCategoryBarang(){
+        
+        try {
+            
+        String sql = "Select * from mst_category_barang";
+            Statement st = aplikasiInventory.config.getConnection().createStatement();
+            ResultSet set;
+            set = st.executeQuery(sql);
+            int no = 0;
+            while (set.next()) {
+                jComboBox1.addItem(new CategoryBarangDv(set.getInt("id"),set.getString("nm_ctg")));
+              }
+        } catch (SQLException ex) {
+            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+            
     }
     
     private void listTypeBarang(){
@@ -62,7 +92,7 @@ public class listTransaksiIn extends javax.swing.JFrame {
             
            // jCmbJBTN.getSelectedItem();
         } catch (SQLException ex) {
-            Logger.getLogger(listTransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportKas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
             
@@ -74,9 +104,9 @@ public class listTransaksiIn extends javax.swing.JFrame {
     }
     
     private void enableBtn(boolean x) {
-        jBtnDlt.setEnabled(x);
-//        jBtnEdit.setVisible(true);
-        jBtnEdit.setEnabled(x);
+//        jBtnDlt.setEnabled(x);
+////        jBtnEdit.setVisible(true);
+//        jBtnEdit.setEnabled(x);
     }
     
     private void enviBtnSave(boolean x) {
@@ -85,8 +115,8 @@ public class listTransaksiIn extends javax.swing.JFrame {
     }
     
     private void enviBtnNew(boolean x){
-        jBtnNew.setEnabled(x);
-        jBtnNew.setVisible(x);
+//        jBtnNew.setEnabled(x);
+//        jBtnNew.setVisible(x);
     }
     
     private void enviBtnSave2(boolean x) {
@@ -163,10 +193,10 @@ public class listTransaksiIn extends javax.swing.JFrame {
                  while (sets.next()) {
                      divisiname = sets.getString("name");
                  }
-                 String sqls2 = "Select * from trx_pemasukan_item where trx_pemasukan_id="+set.getInt("id");
+                 String sqls2 = "Select * from mst_divisi where id="+set.getInt("divisi_id");
                 Statement sts2 = aplikasiInventory.config.getConnection().createStatement();
                 ResultSet sets2 = sts2.executeQuery(sqls2);
-                if(sets2 != null){
+                if(sets != null){
                     String kolom1 = String.valueOf(no).toString();
                 String kolom2 = set.getString("trx_date_pemasukan");
                 String kolom3 = set.getString("trx_no_pemasukan");
@@ -226,37 +256,61 @@ public class listTransaksiIn extends javax.swing.JFrame {
     
     private void cari(JTable jTabel){
     try {
-            Object[] field = {"No","Date","No. Transaksi","Divisi","Keterangan"};
+        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(dt1.format(jXDatePicker1.getDate()));
+        startdate = dt1.format(jXDatePicker1.getDate());
+        SimpleDateFormat dt2 = new SimpleDateFormat("yyyy-MM-dd");
+        enddate = dt2.format(jXDatePicker2.getDate());
+        CategoryBarangDv category = (CategoryBarangDv) jComboBox1.getSelectedItem();
+       idcategory = category.getId();
+       System.out.println(enddate);
+        
+            Object[] field = {"No","Date","No. Transaksi","Uraian","Stock","Harga Satuan","Total Harga"};
             DfltTblMode = new DefaultTableModel(null, field);
-            jTabel.setModel(DfltTblMode);
+//            DfltTblMode = new DefaultTableModel();
             
-            String sql = "Select * from trx_pemasukan where trx_no_pemasukan like '%" + jTextField1.getText() + "%'" +
-                         "or trx_desc_pemasukan like '%" + jTextField1.getText() + "%'";
+            jTabel.setModel(DfltTblMode);
+//            TableColumnModel cm = jTabel.getColumnModel();
+//            ColumnGroup g_name = new ColumnGroup("Barang-Barang");
+//            g_name.add(cm.getColumn(1));
+//            g_name.add(cm.getColumn(2));
+//            GroupableTableHeader header = (GroupableTableHeader)jTabel.getTableHeader();
+//            header.addColumnGroup(g_name);
+//            jTabel.setTableHeader(header);
+//            DfltTblMode.get
+            
+           // String sql = "SELECT * FROM trx_pemasukan_item  tpi JOIN trx_pemasukan tp WHERE tpi.trx_pemasukan_id=tpi.trx_pemasukan_id and tp.trx_date_pemasukan BETWEEN '"+startdate+"' and '"+enddate+"'";
+           String sql = "SELECT SUM(tpi.trx_qty_pemasukan_item) as totalqty, tpi.trx_price_pemasukan_item as price,SUM(tpi.trx_total_pemasukan_item)"
+                + " as totalall, tpi.trx_honor_pemasukan_item as honor,tp.trx_date_pemasukan as date , tp.trx_no_pemasukan as code"
+                + ", tpi.barang_id as barangid FROM mst_barang mb JOIN trx_pemasukan_item tpi ON  mb.id=tpi.barang_id JOIN trx_pemasukan tp"
+                + " WHERE tp.trx_date_pemasukan BETWEEN '"+startdate+"' and '"+enddate+"' and mb.ctg_barang_id="+idcategory+" GROUP BY mb.id"
+                + "";
+           
+           System.out.println(sql);
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);
-
+            
             int no = 0;
             while (set.next()) {
                 no++;
-                String sqls = "Select * from mst_divisi where id="+set.getInt("divisi_id");
+                String sqls = "Select * from mst_barang where id="+set.getInt("barangid");
                 Statement sts = aplikasiInventory.config.getConnection().createStatement();
                 ResultSet sets = sts.executeQuery(sqls);
                 String divisiname = "";
                  while (sets.next()) {
-                     divisiname = sets.getString("name");
+                     divisiname = sets.getString("nm_barang");
                  }
-                 String sqls2 = "Select * from mst_divisi where id="+set.getInt("divisi_id");
-                Statement sts2 = aplikasiInventory.config.getConnection().createStatement();
-                ResultSet sets2 = sts2.executeQuery(sqls2);
-                if(sets != null){
+               
                     String kolom1 = String.valueOf(no).toString();
-                String kolom2 = set.getString("trx_date_pemasukan");
-                String kolom3 = set.getString("trx_no_pemasukan");
+                String kolom2 = set.getString("date");
+                String kolom3 = set.getString("code");
                 String kolom4 = divisiname;
-                String kolom5 = set.getString("trx_desc_pemasukan");
-                String[] data = {kolom1, kolom2, kolom3,kolom4,kolom5};
+                String kolom5 = set.getString("totalqty");
+                String kolom6 = set.getString("price");
+                String kolom7 = set.getString("totalall");
+                String[] data = {kolom1, kolom2, kolom3,kolom4,kolom5,kolom6,kolom7};
                 DfltTblMode.addRow(data);
-                }
+                
             }
             
             jTabel.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
@@ -288,20 +342,21 @@ public class listTransaksiIn extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jBtnEdit = new javax.swing.JButton();
-        jBtnDlt = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jBtnNew = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jBtnCari = new javax.swing.JButton();
+        jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
+        jLabel2 = new javax.swing.JLabel();
+        jXDatePicker2 = new org.jdesktop.swingx.JXDatePicker();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMnKembali = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Form List Transaksi");
-        setPreferredSize(new java.awt.Dimension(700, 615));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -309,33 +364,19 @@ public class listTransaksiIn extends javax.swing.JFrame {
             }
         });
 
-        jBtnEdit.setText("Ubah");
-        jBtnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnEditActionPerformed(evt);
-            }
-        });
-
-        jBtnDlt.setText("Hapus");
-        jBtnDlt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnDltActionPerformed(evt);
-            }
-        });
-
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "No", "Date", "No Transaksi", "SatuanDivisi", "Description"
+                "No", "Date", "No Transaksi", "Uraian", "Stock Masuk", "Harga Satuan", "Total Harga"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -354,27 +395,22 @@ public class listTransaksiIn extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(0).setMaxWidth(30);
         }
 
-        jBtnNew.setText("Data Baru");
-        jBtnNew.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnNewActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Cari Data Berdasarkan Kode / Nama Kategori :");
-
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField1KeyTyped(evt);
-            }
-        });
+        jLabel1.setText("Start Date");
 
         jBtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/search.png"))); // NOI18N
+        jBtnCari.setText("Search");
         jBtnCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnCariActionPerformed(evt);
             }
         });
+
+        jLabel2.setText("End Date");
+
+        jLabel3.setText("Category Barang");
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/excel.png"))); // NOI18N
+        jButton1.setText("Export Excel");
 
         jMenuBar1.setBackground(new java.awt.Color(236, 236, 236));
 
@@ -396,40 +432,44 @@ public class listTransaksiIn extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jBtnNew)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jBtnEdit)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnDlt)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jXDatePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jBtnCari)))
+                            .addComponent(jButton1))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jXDatePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBtnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBtnNew, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jBtnEdit, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jBtnDlt, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(31, 31, 31)
+                .addComponent(jButton1)
                 .addContainerGap())
         );
 
@@ -442,31 +482,6 @@ public class listTransaksiIn extends javax.swing.JFrame {
         new start().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnKembaliMousePressed
-
-    private void jBtnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnNewActionPerformed
-        // TODO add your handling code here:
-        new TransaksiIn().setVisible(true);
-        dispose();
-//       jTxtFldKD_CTGRY.requestFocus();
-    }//GEN-LAST:event_jBtnNewActionPerformed
-
-    private void jBtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEditActionPerformed
-        // TODO add your handling code here:
-       enableField(true);
-       enableBtn(false);
-       enviBtnSave(false);
-       enviBtnSave2(true);
-       enviBtnNew(false);
-    }//GEN-LAST:event_jBtnEditActionPerformed
-
-    private void jBtnDltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDltActionPerformed
-        // TODO add your handling code here:
-        kondisiHapus();
-        enableField(true);
-        enableBtn(false);
-        enviBtnNew(false);
-        enviBtnSave(true);
-    }//GEN-LAST:event_jBtnDltActionPerformed
 
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
         // TODO add your handling code here:
@@ -488,13 +503,6 @@ public class listTransaksiIn extends javax.swing.JFrame {
         new start().setVisible(true);
         dispose();
     }//GEN-LAST:event_formWindowClosing
-
-    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
-        // TODO add your handling code here:
-        if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
-            jBtnCari.doClick();
-        }            
-    }//GEN-LAST:event_jTextField1KeyTyped
 
     private void jCmbJBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCmbJBTNActionPerformed
         // TODO add your handling code here:
@@ -521,14 +529,16 @@ public class listTransaksiIn extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(listTransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportKas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(listTransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportKas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(listTransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportKas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(listTransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportKas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -538,20 +548,22 @@ public class listTransaksiIn extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new listTransaksiIn().setVisible(true);
+                new ReportKas().setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnCari;
-    private javax.swing.JButton jBtnDlt;
-    private javax.swing.JButton jBtnEdit;
-    private javax.swing.JButton jBtnNew;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMnKembali;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private org.jdesktop.swingx.JXDatePicker jXDatePicker1;
+    private org.jdesktop.swingx.JXDatePicker jXDatePicker2;
     // End of variables declaration//GEN-END:variables
 }
