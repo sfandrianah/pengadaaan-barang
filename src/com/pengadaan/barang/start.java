@@ -2,6 +2,7 @@ package com.pengadaan.barang;
 
 import com.pengadaan.barang.kategory.kategori;
 import com.pengadaan.barang.produk.product;
+import com.pengadaan.barang.report_kartu.ReportKas;
 import com.pengadaan.barang.transaksi_in.TransaksiIn;
 import com.pengadaan.barang.transaksi_in.listTransaksiIn;
 import javax.swing.JOptionPane;
@@ -37,6 +38,7 @@ public class start extends javax.swing.JFrame {
         jMnItmTRN_IN = new javax.swing.JMenuItem();
         jMnItmTRN_OUT = new javax.swing.JMenuItem();
         jMnPopulasi = new javax.swing.JMenu();
+        jMnItmRPT_KAS = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SISTEM APLIKASI PENGADAAN BARANG");
@@ -133,6 +135,20 @@ public class start extends javax.swing.JFrame {
                 jMnPopulasiMousePressed(evt);
             }
         });
+
+        jMnItmRPT_KAS.setText("Kartu Persediaan Barang");
+        jMnItmRPT_KAS.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMnItmRPT_KASMousePressed(evt);
+            }
+        });
+        jMnItmRPT_KAS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmRPT_KASActionPerformed(evt);
+            }
+        });
+        jMnPopulasi.add(jMnItmRPT_KAS);
+
         jMenuBar1.add(jMnPopulasi);
 
         setJMenuBar(jMenuBar1);
@@ -195,8 +211,7 @@ public class start extends javax.swing.JFrame {
 
     private void jMnPopulasiMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnPopulasiMousePressed
         // TODO add your handling code here:
-        new populasi().setVisible(true);
-        dispose();
+        
     }//GEN-LAST:event_jMnPopulasiMousePressed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -210,6 +225,16 @@ public class start extends javax.swing.JFrame {
     private void jMnItmPRDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmPRDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMnItmPRDActionPerformed
+
+    private void jMnItmRPT_KASMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmRPT_KASMousePressed
+        // TODO add your handling code here:
+        new ReportKas().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jMnItmRPT_KASMousePressed
+
+    private void jMnItmRPT_KASActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmRPT_KASActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMnItmRPT_KASActionPerformed
 
     /**
      * @param args the command line arguments
@@ -259,6 +284,7 @@ public class start extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMnItmExit;
     private javax.swing.JMenuItem jMnItmInfo;
     private javax.swing.JMenuItem jMnItmPRD;
+    public javax.swing.JMenuItem jMnItmRPT_KAS;
     public javax.swing.JMenuItem jMnItmTRN_IN;
     public javax.swing.JMenuItem jMnItmTRN_OUT;
     private javax.swing.JMenuItem jMnItmubah;
