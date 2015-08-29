@@ -161,8 +161,8 @@ public class product extends javax.swing.JFrame {
        i = jTxtFldNM_BARANG.getText();
        t = jTxtFldHRG_JUAL.getText();
        e = jTxtFldHRG_BELI.getText();
-       m = jCmbJBTN.getSelectedItem();
-       n = jCmbJBTN.getSelectedItem();
+//       m = jCmbJBTN.getSelectedItem();
+//       n = jCmbJBTN.getSelectedItem();
        k = jTxtFldKD_BARANG2.getText();
        a = jTxtFldNM_BARANG2.getText();
        j = jTxtFldHRG_JUAL2.getText();

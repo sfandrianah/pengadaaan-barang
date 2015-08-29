@@ -1,5 +1,6 @@
 package com.pengadaan.barang.report_kartu;
 
+import Util.Util;
 import com.pengadaan.barang.transaksi_in.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
@@ -8,11 +9,15 @@ import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.start;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -24,6 +29,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 public class ReportKas extends javax.swing.JFrame {
 
@@ -237,6 +249,7 @@ public class ReportKas extends javax.swing.JFrame {
         
     }
     
+    
     private void kondisiHapus() {
 //       e = jTxtFldKD_CTGRY.getText();
             
@@ -253,6 +266,93 @@ public class ReportKas extends javax.swing.JFrame {
               JOptionPane.showMessageDialog(this,"Data gagal dihapus: " +ex);
         }
     }    
+    
+    private void mcExcel(Sheet sheet,Cell cell,Row rowss,int rw,int cl,String text){
+        rowss = sheet.createRow((short) rw);
+        cell = rowss.createCell((short) cl);
+        cell.setCellValue(text);
+    }
+    
+    private void mcExcelZero(Sheet sheet,Cell cell,Row rowss,int rw,int cl,String text){
+        rowss = sheet.createRow((short) rw);
+        cell = rowss.createCell((short) 0);
+        cell.setCellValue(text);
+    }
+    
+    private void exportExcelKartu() throws FileNotFoundException, IOException{
+        
+        Util util = new Util();
+        
+         Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("Sheet1");
+
+        Row rowss = sheet.createRow((short) 0);
+        Cell cell = rowss.createCell((short) 0);
+        cell.setCellValue("KARTU PERSEDIAAN BARANG");
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+        cell.setCellStyle(cellStyle);
+        
+        rowss = sheet.createRow((short) 1);
+        rowss.createCell(0).setCellValue("SKPD");
+        rowss.createCell(1).setCellValue(": Dinas Pendapatan Pengelolaan Keuangan dan Aset Daerah");
+        rowss = sheet.createRow((short) 2);
+        rowss.createCell(0).setCellValue("KAB/KOTA");
+        rowss.createCell(1).setCellValue(": TANGERANG SELATAN");
+        rowss = sheet.createRow((short) 3);
+        rowss.createCell(0).setCellValue("PROVINSI");
+        rowss.createCell(1).setCellValue(": BANTEN");
+        
+        SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(dt1.format(jXDatePicker1.getDate()));
+        startdate = dt1.format(jXDatePicker1.getDate());
+        SimpleDateFormat dt2 = new SimpleDateFormat("yyyy-MM-dd");
+        enddate = dt2.format(jXDatePicker2.getDate());
+        
+        rowss = sheet.createRow((short) 5);
+        rowss.createCell(0).setCellValue("GUDANG");
+        rowss.createCell(1).setCellValue(":");
+        rowss = sheet.createRow((short) 6);
+        rowss.createCell(0).setCellValue("CATEGORY BARANG");
+        rowss.createCell(1).setCellValue(": "+jComboBox1.getSelectedItem().toString());
+        rowss = sheet.createRow((short) 7);
+        rowss.createCell(0).setCellValue("SATUAN");
+        rowss.createCell(1).setCellValue(":");
+        rowss = sheet.createRow((short) 8);
+        rowss.createCell(0).setCellValue("PERIODE");
+        rowss.createCell(1).setCellValue(": "+util.getMonth(startdate)+" - "+util.getMonth(enddate));
+        
+        CellStyle style = wb.createCellStyle(); //Create new style
+            style.setWrapText(true);
+        
+        rowss = sheet.createRow((short)10);
+        cell = rowss.createCell(0);
+        
+        rowss.setCellValue("NO");
+        rowss.createCell(1).setCellValue("No./Tgl. Surat Dasar Penerimaan/ Pengeluaran");
+//        rowss.set
+        sheet.addMergedRegion(new CellRangeAddress(10,11,0,0));
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                0, //last row  (0-based)
+                0, //first column (0-based)
+                10 //last column  (0-based)
+        ));
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        // Write the output to a file
+         
+//           FileOutputStream fileOut = new FileOutputStream("D:\\excel\\workbook-"+strDate+".xls");
+                   FileOutputStream fileOut = new FileOutputStream("1.xls");
+
+//            fileOut
+            
+            wb.write(fileOut);
+            fileOut.close();
+        
+       
+    }
     
     private void cari(JTable jTabel){
     try {
@@ -411,6 +511,11 @@ public class ReportKas extends javax.swing.JFrame {
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/excel.png"))); // NOI18N
         jButton1.setText("Export Excel");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jMenuBar1.setBackground(new java.awt.Color(236, 236, 236));
 
@@ -507,6 +612,15 @@ public class ReportKas extends javax.swing.JFrame {
     private void jCmbJBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCmbJBTNActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCmbJBTNActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            // TODO add your handling code here:
+            exportExcelKartu();
+        } catch (IOException ex) {
+            Logger.getLogger(ReportKas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
