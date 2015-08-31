@@ -166,7 +166,8 @@ public class listTransaksiIn extends javax.swing.JFrame {
                  String sqls2 = "Select * from trx_pemasukan_item where trx_pemasukan_id="+set.getInt("id");
                 Statement sts2 = aplikasiInventory.config.getConnection().createStatement();
                 ResultSet sets2 = sts2.executeQuery(sqls2);
-                if(sets2 != null){
+                System.out.println("size = "+sets2.last());
+                if(sets2.last() == true){
                     String kolom1 = String.valueOf(no).toString();
                 String kolom2 = set.getString("trx_date_pemasukan");
                 String kolom3 = set.getString("trx_no_pemasukan");
@@ -248,7 +249,7 @@ public class listTransaksiIn extends javax.swing.JFrame {
                  String sqls2 = "Select * from mst_divisi where id="+set.getInt("divisi_id");
                 Statement sts2 = aplikasiInventory.config.getConnection().createStatement();
                 ResultSet sets2 = sts2.executeQuery(sqls2);
-                if(sets != null){
+                if(sets2.last() == true){
                     String kolom1 = String.valueOf(no).toString();
                 String kolom2 = set.getString("trx_date_pemasukan");
                 String kolom3 = set.getString("trx_no_pemasukan");
@@ -300,7 +301,7 @@ public class listTransaksiIn extends javax.swing.JFrame {
         jMnKembali = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Form List Transaksi");
+        setTitle("Form List Transaksi In");
         setPreferredSize(new java.awt.Dimension(700, 615));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {

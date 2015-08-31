@@ -30,9 +30,16 @@ public class PengadaanBarang {
     }
     
     public void konekkeDatabase() {
-        config.setServer("localhost");
+        /*
+        Public Server
+        config.setServer("192.168.43.19");
         config.setUser("public");
         config.setPassword("fandrianah");
+        config.setDatabase("pengadaan_barang");
+        */
+        config.setServer("127.0.0.1");
+        config.setUser("root");
+        config.setPassword("");
         config.setDatabase("pengadaan_barang");
         config.makeConnect();
     }

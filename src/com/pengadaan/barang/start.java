@@ -5,6 +5,7 @@ import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.report_kartu.ReportKas;
 import com.pengadaan.barang.transaksi_in.TransaksiIn;
 import com.pengadaan.barang.transaksi_in.listTransaksiIn;
+import com.pengadaan.barang.transaksi_out.listTransaksiOut;
 import javax.swing.JOptionPane;
 
 public class start extends javax.swing.JFrame {
@@ -125,6 +126,11 @@ public class start extends javax.swing.JFrame {
                 jMnItmTRN_OUTMousePressed(evt);
             }
         });
+        jMnItmTRN_OUT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmTRN_OUTActionPerformed(evt);
+            }
+        });
         jMnTRN.add(jMnItmTRN_OUT);
 
         jMenuBar1.add(jMnTRN);
@@ -136,7 +142,7 @@ public class start extends javax.swing.JFrame {
             }
         });
 
-        jMnItmRPT_KAS.setText("Kartu Persediaan Barang");
+        jMnItmRPT_KAS.setText("Pengadaan Barang");
         jMnItmRPT_KAS.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMnItmRPT_KASMousePressed(evt);
@@ -188,7 +194,7 @@ public class start extends javax.swing.JFrame {
 
     private void jMnItmTRN_OUTMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmTRN_OUTMousePressed
         // TODO add your handling code here:
-        new TRN_OUT().setVisible(true);
+        new listTransaksiOut().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnItmTRN_OUTMousePressed
 
@@ -235,6 +241,10 @@ public class start extends javax.swing.JFrame {
     private void jMnItmRPT_KASActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmRPT_KASActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMnItmRPT_KASActionPerformed
+
+    private void jMnItmTRN_OUTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmTRN_OUTActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMnItmTRN_OUTActionPerformed
 
     /**
      * @param args the command line arguments

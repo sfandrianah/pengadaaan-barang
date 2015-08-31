@@ -23,7 +23,7 @@ public class login extends javax.swing.JFrame {
     public void verifikasi() {
         try{
             Statement st = aplikasiInventory.config.getConnection().createStatement();
-            ResultSet rs = st.executeQuery("select * from karyawan where NIK = '"+
+            ResultSet rs = st.executeQuery("select * from mst_user where NIK = '"+
                     jTxtFldNIK.getText()+"' and pass = '"+jTxtFldPass.getText()+"' and pass != ''");
             
         if(rs.next()) {

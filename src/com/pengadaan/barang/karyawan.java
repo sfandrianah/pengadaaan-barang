@@ -91,7 +91,7 @@ public class karyawan extends javax.swing.JFrame {
        else {    
                  Statement st = aplikasiInventory.config.getConnection().createStatement();  
                  st.executeUpdate(
-                       "insert into karyawan"+
+                       "insert into mst_user"+
                        "(NIK, NM_KRYWN, JABATAN, EMAIL, PASS) values ('"+ r +"','"+ i +"','"+ jCmbJBTN.getSelectedItem() +"','"+ a +"','"+ k +"')" );
                  
                  tampilDataKeTabel();      
@@ -123,7 +123,7 @@ public class karyawan extends javax.swing.JFrame {
        else {      
                  Statement st = aplikasiInventory.config.getConnection().createStatement();  
                  st.executeUpdate(
-                       "update karyawan set "+
+                       "update mst_user set "+
                        "NM_KRYWN = "+"'"+ i +"', "+
                        "EMAIL = "+"'"+ a +"' "+
                        "where NIK = '"+ e +"'");
@@ -143,7 +143,7 @@ public class karyawan extends javax.swing.JFrame {
             DfltTblMode = new DefaultTableModel(null, field);
             jTabel.setModel(DfltTblMode);
            
-            String sql = "Select * from karyawan";
+            String sql = "Select * from mst_user";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);
                   
@@ -204,7 +204,7 @@ public class karyawan extends javax.swing.JFrame {
        try {
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             st.executeUpdate(
-            " delete from karyawan where NIK ='"+ e +"'");
+            " delete from mst_user where NIK ='"+ e +"'");
             clearTEXT();
             tampilDataKeTabel();
             
@@ -221,7 +221,7 @@ public class karyawan extends javax.swing.JFrame {
             DfltTblMode = new DefaultTableModel(null, field);
             jTabel.setModel(DfltTblMode);
             
-            String sql = "Select * from karyawan where NIK like '%" + jTextField1.getText() + "%'" +
+            String sql = "Select * from mst_user where NIK like '%" + jTextField1.getText() + "%'" +
                          "or NM_KRYWN like '%" + jTextField1.getText() + "%'";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);

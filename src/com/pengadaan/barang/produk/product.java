@@ -1,5 +1,6 @@
 package com.pengadaan.barang.produk;
 
+import Util.CategoryBarangDv;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
 import com.pengadaan.barang.start;
@@ -11,8 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
 public class product extends javax.swing.JFrame {
 
@@ -46,10 +49,10 @@ public class product extends javax.swing.JFrame {
 
     private void listSatuan(){
         jCmbJBTN2.removeAllItems();
-        CategoryBarangDv categoryDv = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
+        
         try {
-            
-        String sql = "Select * from mst_satuan where category_barang_id="+categoryDv.getId();
+            CategoryBarangDv categoryDv = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
+            String sql = "Select * from mst_satuan where category_barang_id="+categoryDv.getId();
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set;
             set = st.executeQuery(sql);
@@ -57,7 +60,8 @@ public class product extends javax.swing.JFrame {
             while (set.next()) {
                 jCmbJBTN2.addItem(new CategoryBarangDv(set.getInt("id"),set.getString("name")));
               }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            System.out.println("mask gagal "+ex.getMessage());
             Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -167,6 +171,9 @@ public class product extends javax.swing.JFrame {
        a = jTxtFldNM_BARANG2.getText();
        j = jTxtFldHRG_JUAL2.getText();
        o = jTxtFldHRG_BELI2.getText();
+       CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getSelectedItem();
+       idcategory = category.getId();
+       satuan = jCmbJBTN2.getSelectedItem().toString();
        
        try {
        if (r.equals("") || i.equals("") || t.equals("") || e.equals("")) 
@@ -184,10 +191,12 @@ public class product extends javax.swing.JFrame {
                        "update mst_barang set "+
                        "kd_barang       = "+"'"+ r +"', "+
                        "nm_barang       = "+"'"+ i +"', "+
-                    
-                       "hrg_jual_barang = "+"'"+ t +"', "+
+                       "ctg_barang_id = "+"'"+ idcategory +"',"+
+                       "satuan_barang = "+"'"+ satuan +"',"+ 
+                       "hrg_jual_barang = "+"'"+ t +"',"+ 
                        "hrg_beli_barang = "+"'"+ e +"' "+
-                       "where kd_barang = '"+ k +"'");
+                               
+                       "where kd_barang = '"+ r +"'");
        
                  tampilDataKeTabel(); 
                  JOptionPane.showMessageDialog(this,"Data berhasil diperbaharui");
@@ -200,25 +209,29 @@ public class product extends javax.swing.JFrame {
     
     private void tabelModel(JTable jTabel) {
         try {
-            Object[] field = {"No","Kode Barang","Nama Barang","Category Barang", "Satuan Barang", "Harga Beli", "Harga Jual"};
+            final Object[] field = {"No","Kode Barang","Nama Barang","Category Barang", "Satuan Barang", "Harga Beli", "Harga Jual","id Barang"};
             DfltTblMode = new DefaultTableModel(null, field);
             jTabel.setModel(DfltTblMode);
-            
+        
+                   
             String sql = "Select * from mst_barang";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);
 //            jTabel.re
             int no = 0;
+            String sending = "";
+            Object[] sendings = null;
             while (set.next()) {
                 no++;
                 System.out.println("id barang : "+set.getInt("ctg_barang_id"));
                 String namectg = null;
+                Integer idctg = null;
                 String sqls = "Select * from mst_category_barang where id="+set.getInt("ctg_barang_id");
                 Statement sts = aplikasiInventory.config.getConnection().createStatement();
                 ResultSet sets = sts.executeQuery(sqls);
                 while (sets.next()) {
                     namectg = sets.getString("nm_ctg");
-                    
+                    idctg = sets.getInt("id");
                 }
                 System.out.println("id barang : "+namectg);
 //                 CategoryBarangDv category = (CategoryBarangDv) jCmbJBTN.getName(set.getInt("ctg_barang_id"));
@@ -227,15 +240,52 @@ public class product extends javax.swing.JFrame {
                 String kolom2 = set.getString("kd_barang");
                 String kolom3 = set.getString("nm_barang");
                 String kolom4 = namectg;
+                Integer kolom41 = idctg;
                 String kolom5 = set.getString("satuan_barang");
                 String kolom6 = String.valueOf(set.getDouble("hrg_jual_barang"));
                 String kolom7 = String.valueOf(set.getDouble("hrg_beli_barang"));
-           
-                String[] data = {kolom1, kolom2, kolom3, kolom4,kolom5,kolom6,kolom7};
-                DfltTblMode.addRow(data);
+                 String[] datan = {kolom1,kolom2,kolom3,kolom4,kolom5,kolom6,kolom7,kolom41.toString()};
+//                sending = sending + "{"+kolom1+","+kolom2+","+kolom3+","+kolom4+","+kolom5+","+
+//                        kolom6+","+kolom7+","+kolom41+"}";
+                DfltTblMode.addRow(datan);
+               /*sendings = new Object[8];
+               sendings[0] = kolom1;
+               sendings[1] = kolom2;
+               sendings[2] = kolom3;
+              sendings[3] = kolom4;
+              sendings[4] = kolom5;
+              sendings[5] = kolom6;
+              sendings[6] = kolom7;
+              sendings[7] = kolom41;
+                */
             }
-            
+//            Object[] datas = {sending};
+            /*final Object[][] data = {sendings};
+            TableModel dataModel = new AbstractTableModel() {
+
+                @Override
+                public int getRowCount() { return field.length;}
+
+                @Override
+                public int getColumnCount() { return data.length; }
+
+                @Override
+                public Object getValueAt(int row, int col) {
+                   return data[row][col];
+                }
+                public String getColumName(int column){return (String) field[column];}
+                public Class getColumnClass(int col){
+                    return getValueAt(0,col).getClass();
+                }
+                public void setValueAt(Object aValue,int row, int column){
+                    data[row][column] = aValue;
+                }
+            };
+            jTabel.setModel(dataModel);
+            */
             jTabel.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+            jTabel.getColumnModel().getColumn(7).setMaxWidth(0);
+            jTabel.getColumnModel().getColumn(7).setMinWidth(0);
             column = jTabel.getColumnModel().getColumn(0);
             column.setPreferredWidth(40);
             column = jTabel.getColumnModel().getColumn(1);
@@ -246,6 +296,8 @@ public class product extends javax.swing.JFrame {
             column.setPreferredWidth(200);
             column = jTabel.getColumnModel().getColumn(4);
             column.setPreferredWidth(200);
+            
+            
           }
           catch (SQLException e) {
               JOptionPane.showMessageDialog(this, "Koneksi gagal: " +e);
@@ -259,9 +311,10 @@ public class product extends javax.swing.JFrame {
         String kolom2 = jTabel.getValueAt(row,1).toString();
         String kolom3 = jTabel.getValueAt(row,2).toString();
         String kolom4 = jTabel.getValueAt(row,3).toString();
-        String kolom5 = jTabel.getValueAt(row,4).toString();
+//        String kolom5 = jTabel.getValueAt(row,4).toString();
         String kolom6 = jTabel.getValueAt(row,5).toString();
         String kolom7 = jTabel.getValueAt(row,6).toString();
+        String kolom8 = jTabel.getValueAt(row,7).toString();
        
         jTxtFldKD_BARANG.setText(kolom2);
      //   jTxtFldKD_BARANG2.setText(kolom2);
@@ -270,8 +323,16 @@ public class product extends javax.swing.JFrame {
         System.out.println(kolom4);
         jCmbJBTN.setEditable(true);
         jCmbJBTN2.setEditable(true);
-        jCmbJBTN.setSelectedItem(kolom4);
-        jCmbJBTN2.setSelectedItem(kolom5);
+        
+        
+//        jCmbJBTN.addItem(new CategoryBarangDv(Integer.parseInt(kolom8),kolom4));
+//        CategoryBarangDv categ = new CategoryBarangDv(Integer.parseInt(kolom8),kolom4);
+        
+        //CategoryBarangDv categoryDv = jCmbJBTN.setSelectedItem(categ);
+        
+        jCmbJBTN.setSelectedItem(new CategoryBarangDv(Integer.parseInt(kolom8),kolom4));
+       // jCmbJBTN.setSelectedItem(kolom8);
+//        jCmbJBTN2.setSelectedItem(kolom5.toString());
         jCmbJBTN.setEditable(false);
         jCmbJBTN2.setEditable(false);
         
@@ -285,7 +346,7 @@ public class product extends javax.swing.JFrame {
        try {
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             st.executeUpdate(
-            " delete from mst_barang where id ='"+ e +"'");
+            " delete from mst_barang where kd_barang ='"+ e +"'");
             clearTEXT();
             tampilDataKeTabel();
             
@@ -706,11 +767,13 @@ public class product extends javax.swing.JFrame {
 
     private void jBtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEditActionPerformed
         // TODO add your handling code here:
+        
        enableField(true);
        enableBtn(false);
        enviBtnSave(false);
        enviBtnSave2(true);
        enviBtnNew(false);
+       listSatuan();
     }//GEN-LAST:event_jBtnEditActionPerformed
 
     private void jBtnDltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDltActionPerformed

@@ -5,6 +5,7 @@
  */
 package com.pengadaan.barang.kategory;
 
+import Util.TypeBarangDv;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;

@@ -3,34 +3,33 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pengadaan.barang.produk;
+package Util;
 
 /**
  *
- * @author yudith
+ * @author sfandrianah
  */
-public class SatuanDv {
-    
-    private int id;
-    private String name;
+public class TypeBarangDv {
 
-    public SatuanDv(int id,String name){
+    private int id;
+    private String description;
+
+    public TypeBarangDv(int id, String description) {
         this.id = id;
-        this.name= name;
+        this.description = description;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public String toString(){
-        return name;
+    public String toString() {
+        return description;
     }
-    
-            
-    
+
+
 }

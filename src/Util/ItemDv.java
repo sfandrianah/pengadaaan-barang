@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pengadaan.barang.transaksi_in;
+package Util;
 
 import com.pengadaan.barang.produk.*;
 

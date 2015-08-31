@@ -1,5 +1,6 @@
-package com.pengadaan.barang.transaksi_in;
+package com.pengadaan.barang.transaksi_out;
 
+import com.pengadaan.barang.transaksi_in.*;
 import Util.DivisiDv;
 import Util.CategoryBarangDv;
 import Util.TypeBarangDv;
@@ -43,7 +44,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
 import org.jdesktop.swingx.autocomplete.ComboBoxCellEditor;
 
-public class TransaksiIn extends javax.swing.JFrame {
+public class TransaksiOut extends javax.swing.JFrame {
 
     private Integer row, rows, row2, rows3;
     private PengadaanBarang aplikasiInventory = new PengadaanBarang();
@@ -54,7 +55,7 @@ public class TransaksiIn extends javax.swing.JFrame {
     private int idcategory;
     DefaultTableModel models = new DefaultTableModel();
 
-    public TransaksiIn() {
+    public TransaksiOut() {
         initComponents();
         aplikasiInventory.konekkeDatabase();
 //        tampilDataKeTabel();
@@ -75,6 +76,7 @@ public class TransaksiIn extends javax.swing.JFrame {
     }
     
     private void keyEventAll(KeyEvent key){
+        try {
         String test = "";
         
         test = String.valueOf(key.getKeyChar());
@@ -90,7 +92,9 @@ public class TransaksiIn extends javax.swing.JFrame {
         jTextField5.setEnabled(true);
 //        jLabel16.sete
         jTextField5.setText(hasil.toString());
-        
+        } catch(Exception ex){
+            System.out.println("masuk sini gagal "+ex.getMessage());
+        }
     }
     
     private void listTypeBarang(){
@@ -139,7 +143,7 @@ public class TransaksiIn extends javax.swing.JFrame {
                 jCmbJBTN.addItem(new DivisiDv(set.getInt("id"), set.getString("name")));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TransaksiOut.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -174,6 +178,7 @@ public class TransaksiIn extends javax.swing.JFrame {
                 jTextField4.setText(text);
                 jTextField2.setEnabled(true);
                 jTextField2.setText(price);
+                jTextField3.setText("0");
 
                 String test = "";
 
@@ -216,7 +221,7 @@ public class TransaksiIn extends javax.swing.JFrame {
         jComboBox1.removeAllItems();
         try {
             
-            String sql = "Select * from mst_barang mb join mst_category_barang cb ON mb.ctg_barang_id=cb.id where cb.type_barang_id="+categoryDv.getId()+" and mb.nm_barang like '%"+str+"%'";
+            String sql = "Select * from mst_barang mb join mst_category_barang cb ON mb.c tg_barang_id=cb.id where cb.type_barang_id="+categoryDv.getId()+" and mb.nm_barang like '%"+str+"%'";
             Statement st;
 
             st = aplikasiInventory.config.getConnection().createStatement();
@@ -229,9 +234,8 @@ public class TransaksiIn extends javax.swing.JFrame {
                 jComboBox1.addItem(new CategoryBarangDv(set.getInt("id"), set.getString("nm_barang")));
             }
             text.setText(str);
-        } catch (Exception ex) {
-            System.out.println("gagal"+ex.getMessage());
-            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(TransaksiOut.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -254,7 +258,7 @@ public class TransaksiIn extends javax.swing.JFrame {
 
                 @Override
                 public void keyTyped(KeyEvent e) {
-                    keyListBarang(e);
+                   keyListBarang(e);
                 //    System.out.println("masuk 1");
 //                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 }
@@ -276,7 +280,7 @@ public class TransaksiIn extends javax.swing.JFrame {
             
             
         } catch (SQLException ex) {
-            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TransaksiOut.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -347,15 +351,16 @@ public class TransaksiIn extends javax.swing.JFrame {
                 
                 Statement st = aplikasiInventory.config.getConnection().createStatement();
                 st.executeUpdate(
-                        "insert into trx_pemasukan"
-                        + "(trx_no_pemasukan, trx_date_pemasukan,divisi_id,trx_desc_pemasukan,trx_total_pemasukan) values ('" + code + "','" + date + "','"+divisi+"','" + desc + "',"+jLabel2.getText()+")");
+                        "insert into trx_pengeluaran"
+                        + "(trx_no_pengeluaran, trx_date_pengeluaran,divisi_id,trx_desc_pengeluaran,trx_total_pengeluaran) values ('" + code + "','" + date + "','"+divisi+"','" + desc + "',"+jLabel2.getText()+")");
 
 //                tampilDataKeTabel();
                 String sending = "";
                 String sdstock = "";
                 int i;
+                Integer n;
                 for (i=0; i<jTable1.getRowCount(); i++){
-                 //   int n = i + i;
+//                    n = Integer.parseInt(i + i);
                     
                     String kolom2 = jTable1.getValueAt(i, 1).toString();
                     String kolom3 = jTable1.getValueAt(i, 2).toString();
@@ -364,29 +369,28 @@ public class TransaksiIn extends javax.swing.JFrame {
                     String kolom6 = jTable1.getValueAt(i, 5).toString();
                     String kolom7 = jTable1.getValueAt(i, 6).toString();
                     String kolom8 = jTable1.getValueAt(i, 7).toString();
-                    
+                    System.out.println("size "+jTable1.getRowCount()+"-"+i);
                     String coma = "";
-                    if(i == jTable1.getRowCount() - 1){
+                    if(i == jTable1.getRowCount()-1){
                         coma = "";
                     } else {
                         coma = ",";
                     }
                     sending = sending + "('"+kolom2+"','"+kolom3+"',"+kolom5+",'"+kolom6+"','"+kolom7+"','"+kolom8+"',LAST_INSERT_ID())"+coma;
                     
-                    sdstock = sdstock + "('"+kolom2+"','"+kolom3+"','"+date+"','"+kolom5+"',LAST_INSERT_ID(),'"+kolom6+"','"+kolom7+"','1')"+coma;
-//                    System.out.println("kolom 2 = "+kolom2+
-//                            "kolom 3 = "+kolom3+
-//                            "kolom 4 = "+kolom4+
-//                            "kolom 5 = "+kolom5);
+                    sdstock = sdstock + "('"+kolom2+"','"+kolom3+"','"+date+"','"+kolom5+"',LAST_INSERT_ID(),'"+kolom6+"','"+kolom7+"',2)"+coma;
+                    System.out.println("kolom 2 = "+kolom2+
+                            "kolom 3 = "+kolom3+
+                            "kolom 4 = "+kolom4+
+                            "kolom 5 = "+kolom5);
                     
                 }
                 System.out.println("sending = "+sending);
-                System.out.println("sendingstock = "+sdstock);
                 
                  st.executeUpdate(
-                        "insert into trx_pemasukan_item"
-                        + "(barang_id, barang_name,trx_qty_pemasukan_item,trx_price_pemasukan_item,"
-                        + "trx_honor_pemasukan_item,trx_total_pemasukan_item,trx_pemasukan_id) "
+                        "insert into trx_pengeluaran_item"
+                        + "(barang_id, barang_name,trx_qty_pengeluaran_item,trx_price_pengeluaran_item,"
+                        + "trx_honor_pengeluaran_item,trx_total_pengeluaran_item,trx_pengeluaran_id) "
                         + "values "+sending);
                  
                  st.executeUpdate("insert into trx_stock (barang_id,barang_name,trx_stock_date,trx_stock_qty,"
@@ -453,7 +457,7 @@ public class TransaksiIn extends javax.swing.JFrame {
                 dtm.setValueAt(jcomb, rows, columns);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(TransaksiIn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TransaksiOut.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -604,7 +608,6 @@ public class TransaksiIn extends javax.swing.JFrame {
 //            modeljDialogPRD(jTable2, rowss);
             
             listBarang();
-            jTextField3.setText("0");
             jBtnOk2.setEnabled(true);
             jBtnKembali2.setEnabled(true);
              jBtnOk2.setVisible(false);
@@ -750,6 +753,8 @@ public class TransaksiIn extends javax.swing.JFrame {
         String kolom7 = jTabel.getValueAt(rows, 6).toString();
         String kolom8 = jTabel.getValueAt(rows, 7).toString();
         
+        
+        jComboBox1.setSelectedItem(new CategoryBarangDv(Integer.parseInt(kolom2), kolom3));
         jTextField4.setText(kolom4);
         jTextField1.setText(kolom5);
         jTextField2.setText(kolom6);
@@ -1144,7 +1149,7 @@ public class TransaksiIn extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Form Pemasukan Barang");
+        setTitle("Form Pengeluaran Barang");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -1390,7 +1395,7 @@ public class TransaksiIn extends javax.swing.JFrame {
 
     private void jMnKembaliMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnKembaliMousePressed
         // TODO add your handling code here:
-        new listTransaksiIn().setVisible(true);
+        new listTransaksiOut().setVisible(true);
         dispose();
     }//GEN-LAST:event_jMnKembaliMousePressed
 
@@ -1403,7 +1408,7 @@ public class TransaksiIn extends javax.swing.JFrame {
 //        enviBtnSave2(false);
 //        enviBtnNew(false);
 //        jTxtFldNO_TRANS.requestFocus();
-        new TransaksiIn().setVisible(true);
+        new TransaksiOut().setVisible(true);
         dispose();
     }//GEN-LAST:event_jBtnNewActionPerformed
 
@@ -1569,7 +1574,6 @@ public class TransaksiIn extends javax.swing.JFrame {
         // TODO add your handling code here:
         jComboBox1.setEnabled(false);
         jComboBox1.setEnabled(true);
-        jTextField3.setText("0");
         jComboBox1.setEditable(true);
         listSatuan();
     }//GEN-LAST:event_jComboBox1ActionPerformed
@@ -1599,14 +1603,26 @@ public class TransaksiIn extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiOut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiOut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiOut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TransaksiIn.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TransaksiOut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -1618,7 +1634,7 @@ public class TransaksiIn extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new TransaksiIn().setVisible(true);
+                new TransaksiOut().setVisible(true);
             }
         });
     }

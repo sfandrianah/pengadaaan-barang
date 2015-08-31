@@ -37,7 +37,7 @@ public class ubah extends javax.swing.JFrame {
     private void verifikasiPassLama() {
         try{
             Statement st = aplikasiInventory.config.getConnection().createStatement();
-            ResultSet rs = st.executeQuery("select * from karyawan where NIK = '"+
+            ResultSet rs = st.executeQuery("select * from mst_user where NIK = '"+
                     jlblNIKU.getText()+"' and PASS = '"+jTxtFldPass.getText()+"'");
 
             if(rs.next()) {
@@ -62,7 +62,7 @@ public class ubah extends javax.swing.JFrame {
         try {
           Statement st = aplikasiInventory.config.getConnection().createStatement();
           st.executeUpdate(
-                "update karyawan set "+
+                "update mst_user set "+
                 "PASS = "+"'"+jTxtFldPass.getText()+"' "+
                 "where NIK = '"+jlblNIKU.getText()+"'");
                     

@@ -1,5 +1,6 @@
 package com.pengadaan.barang.kategory;
 
+import Util.TypeBarangDv;
 import com.pengadaan.barang.PengadaanBarang;
 import com.pengadaan.barang.start;
 import java.awt.BorderLayout;
@@ -66,6 +67,7 @@ public class kategori extends javax.swing.JFrame {
         }
 
             
+    
     }
 
     private void clearTEXT() {
