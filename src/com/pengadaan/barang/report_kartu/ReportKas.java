@@ -9,9 +9,11 @@ import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.start;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -302,6 +304,8 @@ public class ReportKas extends javax.swing.JFrame {
         startdate = dt1.format(jXDatePicker1.getDate());
         SimpleDateFormat dt2 = new SimpleDateFormat("yyyy-MM-dd");
         enddate = dt2.format(jXDatePicker2.getDate());
+        Date dates = new Date();
+        String strToDate = dt1.format(dates);
 
         rowss = sheet.createRow((short) 5);
         rowss.createCell(0).setCellValue("GUDANG");
@@ -649,7 +653,49 @@ public class ReportKas extends javax.swing.JFrame {
             Cell cell50 = rowss.createCell((short) 10);
             cell50.setCellValue("-");
             cell50.setCellStyle(cellStyle20);
-
+//BAGIAN TANDA TANGAN
+            CellStyle cellstyletd1 = wb.createCellStyle();
+             Font font2 = wb.createFont();//Create font
+            font2.setBoldweight(Font.BOLDWEIGHT_BOLD);//Make font bold
+            cellstyletd1.setFont(font2);//set it to bold
+            cellstyletd1.setAlignment(CellStyle.ALIGN_CENTER);
+           
+             CellStyle cellstyletd = wb.createCellStyle();
+            cellstyletd.setAlignment(CellStyle.ALIGN_CENTER);
+            
+            rowss = sheet.createRow((short) jumlahrow+2);
+            Cell celltd0 = rowss.createCell((short) 8);
+            celltd0.setCellValue("Tangerang Selatan , "+util.getMonth(strToDate));
+            celltd0.setCellStyle(cellstyletd);
+            
+            rowss = sheet.createRow((short) jumlahrow+3);
+            Cell celltd = rowss.createCell((short) 0);
+            celltd.setCellValue("ATASAN LANGSUNG");
+            celltd.setCellStyle(cellstyletd);
+            
+            Cell celltd1 = rowss.createCell((short) 8);
+            celltd1.setCellValue("PENYIMPAN BARANG");
+            celltd1.setCellStyle(cellstyletd);
+            
+            rowss = sheet.createRow((short) jumlahrow+7);
+            Cell celltd11 = rowss.createCell((short) 0);
+            celltd11.setCellValue("(HADIANA.SE.MM)");
+            celltd11.setCellStyle(cellstyletd1);
+            
+            Cell celltd12 = rowss.createCell((short) 8);
+            celltd12.setCellValue("(Hendra Subrata)");
+            celltd12.setCellStyle(cellstyletd1);
+           
+            
+            rowss = sheet.createRow((short) jumlahrow+8);
+            Cell celltd21 = rowss.createCell((short) 0);
+            celltd21.setCellValue("NIP. 19711231 200212 1 009");
+            celltd21.setCellStyle(cellstyletd);
+            
+            Cell celltd22 = rowss.createCell((short) 8);
+            celltd22.setCellValue("NIP.19710326 200801 1001");
+            celltd22.setCellStyle(cellstyletd);
+            
 //        rowss.set
             sheet.addMergedRegion(new CellRangeAddress(10, 11, 0, 0));
             sheet.addMergedRegion(new CellRangeAddress(10, 11, 1, 1));
@@ -658,8 +704,17 @@ public class ReportKas extends javax.swing.JFrame {
             sheet.addMergedRegion(new CellRangeAddress(10, 11, 6, 6));
             sheet.addMergedRegion(new CellRangeAddress(10, 10, 7, 9));
             sheet.addMergedRegion(new CellRangeAddress(10, 11, 10, 10));
+            
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+3, jumlahrow+3, 0, 1));
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+7, jumlahrow+7, 0, 1));
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+8, jumlahrow+8, 0, 1));
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+2, jumlahrow+2, 8, 10));
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+3, jumlahrow+3, 8, 10));
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+7, jumlahrow+7, 8, 10));
+            sheet.addMergedRegion(new CellRangeAddress(jumlahrow+8, jumlahrow+8, 8, 10));
+            
+            sheet.setColumnWidth(1, 5000);
             sheet.autoSizeColumn(2);
-
             sheet.addMergedRegion(new CellRangeAddress(
                     0, //first row (0-based)
                     0, //last row  (0-based)
@@ -813,9 +868,19 @@ public class ReportKas extends javax.swing.JFrame {
             sheet2.autoSizeColumn(6);
 
             // FileOutputStream fileOut = new FileOutputStream("D:\\excel\\workbook-"+strDate+".xls");
-            FileOutputStream fileOut = new FileOutputStream("1.xls");
+            File yourFile = new File("KPB.xls");
+            int nums = 0;
+            while(yourFile.exists()) { 
+                nums++;
+                yourFile.createNewFile();
+                yourFile.renameTo(new File("KPB"+nums+".xls"));
+            }
+//FileOutputStream oFile = new FileOutputStream(yourFile, false); 
+            FileOutputStream fileOut = new FileOutputStream(yourFile,true);
+            
 //            HSSFSheet sheetto = wb.createSheet(fileOut);
             // fileOut
+//            fileOut.write(b, off, len);
             wb.write(fileOut);
 //            wb.write(fileOut);
             fileOut.close();
