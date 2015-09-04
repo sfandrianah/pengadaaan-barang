@@ -1,10 +1,10 @@
 package com.pengadaan.barang.report_kartu;
 
-import Util.Util;
+import com.pengadaan.barang.util.Util;
 import com.pengadaan.barang.transaksi_in.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
-import Util.CategoryBarangDv;
+import com.pengadaan.barang.util.CategoryBarangDv;
 import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.start;
 import java.awt.BorderLayout;
@@ -74,7 +74,7 @@ public class ReportKas extends javax.swing.JFrame {
 
         try {
 
-            String sql = "Select * from mst_category_barang";
+            String sql = "Select * from mst_category_barang  where type_barang_id=2";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set;
             set = st.executeQuery(sql);

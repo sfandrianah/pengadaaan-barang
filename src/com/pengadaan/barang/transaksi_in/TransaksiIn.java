@@ -1,8 +1,8 @@
 package com.pengadaan.barang.transaksi_in;
 
-import Util.DivisiDv;
-import Util.CategoryBarangDv;
-import Util.TypeBarangDv;
+import com.pengadaan.barang.util.DivisiDv;
+import com.pengadaan.barang.util.CategoryBarangDv;
+import com.pengadaan.barang.util.TypeBarangDv;
 import com.pengadaan.barang.produk.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
@@ -212,6 +212,8 @@ public class TransaksiIn extends javax.swing.JFrame {
         JTextComponent text = (JTextComponent) this.jComboBox1.getEditor().getEditorComponent();
         TypeBarangDv categoryDv = (TypeBarangDv) jCmbJBTN1.getSelectedItem();
         String str = (String) text.getText();
+        text.requestFocus();
+        jComboBox1.requestFocus();
         System.out.println(str);
         jComboBox1.removeAllItems();
         try {

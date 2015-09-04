@@ -1,11 +1,13 @@
 package com.pengadaan.barang;
 
 import com.pengadaan.barang.kategory.kategori;
+import com.pengadaan.barang.kib.KIB;
 import com.pengadaan.barang.produk.product;
 import com.pengadaan.barang.report_kartu.ReportKas;
 import com.pengadaan.barang.transaksi_in.TransaksiIn;
 import com.pengadaan.barang.transaksi_in.listTransaksiIn;
 import com.pengadaan.barang.transaksi_out.listTransaksiOut;
+import com.pengadaan.barang.trx_in_asset.TransaksiAssetIn;
 import javax.swing.JOptionPane;
 
 public class start extends javax.swing.JFrame {
@@ -36,10 +38,12 @@ public class start extends javax.swing.JFrame {
         jMnItmCTGRY = new javax.swing.JMenuItem();
         jMnItmPRD = new javax.swing.JMenuItem();
         jMnTRN = new javax.swing.JMenu();
-        jMnItmTRN_IN = new javax.swing.JMenuItem();
         jMnItmTRN_OUT = new javax.swing.JMenuItem();
+        jMnItmTRN_IN = new javax.swing.JMenuItem();
+        jMnItmTRN_AST = new javax.swing.JMenuItem();
         jMnPopulasi = new javax.swing.JMenu();
         jMnItmRPT_KAS = new javax.swing.JMenuItem();
+        jMnItmKRT_INV_BRG = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SISTEM APLIKASI PENGADAAN BARANG");
@@ -112,14 +116,6 @@ public class start extends javax.swing.JFrame {
 
         jMnTRN.setText("Transaksi");
 
-        jMnItmTRN_IN.setText("Transaksi In");
-        jMnItmTRN_IN.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMnItmTRN_INMousePressed(evt);
-            }
-        });
-        jMnTRN.add(jMnItmTRN_IN);
-
         jMnItmTRN_OUT.setText("Transaksi Out");
         jMnItmTRN_OUT.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -132,6 +128,27 @@ public class start extends javax.swing.JFrame {
             }
         });
         jMnTRN.add(jMnItmTRN_OUT);
+
+        jMnItmTRN_IN.setText("Transaksi In");
+        jMnItmTRN_IN.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMnItmTRN_INMousePressed(evt);
+            }
+        });
+        jMnTRN.add(jMnItmTRN_IN);
+
+        jMnItmTRN_AST.setText("Transaksi Asset");
+        jMnItmTRN_AST.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMnItmTRN_ASTMousePressed(evt);
+            }
+        });
+        jMnItmTRN_AST.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmTRN_ASTActionPerformed(evt);
+            }
+        });
+        jMnTRN.add(jMnItmTRN_AST);
 
         jMenuBar1.add(jMnTRN);
 
@@ -154,6 +171,19 @@ public class start extends javax.swing.JFrame {
             }
         });
         jMnPopulasi.add(jMnItmRPT_KAS);
+
+        jMnItmKRT_INV_BRG.setText("Kartu Inventaris Barang");
+        jMnItmKRT_INV_BRG.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMnItmKRT_INV_BRGMousePressed(evt);
+            }
+        });
+        jMnItmKRT_INV_BRG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmKRT_INV_BRGActionPerformed(evt);
+            }
+        });
+        jMnPopulasi.add(jMnItmKRT_INV_BRG);
 
         jMenuBar1.add(jMnPopulasi);
 
@@ -246,6 +276,26 @@ public class start extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMnItmTRN_OUTActionPerformed
 
+    private void jMnItmTRN_ASTMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmTRN_ASTMousePressed
+        // TODO add your handling code here:
+        new TransaksiAssetIn().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jMnItmTRN_ASTMousePressed
+
+    private void jMnItmTRN_ASTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmTRN_ASTActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMnItmTRN_ASTActionPerformed
+
+    private void jMnItmKRT_INV_BRGMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMnItmKRT_INV_BRGMousePressed
+        // TODO add your handling code here:
+        new KIB().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jMnItmKRT_INV_BRGMousePressed
+
+    private void jMnItmKRT_INV_BRGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmKRT_INV_BRGActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMnItmKRT_INV_BRGActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -293,8 +343,10 @@ public class start extends javax.swing.JFrame {
     public javax.swing.JMenuItem jMnItmCTGRY;
     private javax.swing.JMenuItem jMnItmExit;
     private javax.swing.JMenuItem jMnItmInfo;
+    public javax.swing.JMenuItem jMnItmKRT_INV_BRG;
     private javax.swing.JMenuItem jMnItmPRD;
     public javax.swing.JMenuItem jMnItmRPT_KAS;
+    public javax.swing.JMenuItem jMnItmTRN_AST;
     public javax.swing.JMenuItem jMnItmTRN_IN;
     public javax.swing.JMenuItem jMnItmTRN_OUT;
     private javax.swing.JMenuItem jMnItmubah;

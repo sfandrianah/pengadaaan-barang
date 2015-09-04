@@ -1,9 +1,9 @@
 package com.pengadaan.barang.transaksi_out;
 
 import com.pengadaan.barang.transaksi_in.*;
-import Util.DivisiDv;
-import Util.CategoryBarangDv;
-import Util.TypeBarangDv;
+import com.pengadaan.barang.util.DivisiDv;
+import com.pengadaan.barang.util.CategoryBarangDv;
+import com.pengadaan.barang.util.TypeBarangDv;
 import com.pengadaan.barang.produk.*;
 import com.pengadaan.barang.kategory.*;
 import com.pengadaan.barang.PengadaanBarang;
@@ -218,7 +218,10 @@ public class TransaksiOut extends javax.swing.JFrame {
         TypeBarangDv categoryDv = (TypeBarangDv) jCmbJBTN1.getSelectedItem();
         String str = (String) text.getText();
         System.out.println(str);
+        
         jComboBox1.removeAllItems();
+        text.requestFocus();
+        jComboBox1.requestFocus();
         try {
             
             String sql = "Select * from mst_barang mb join mst_category_barang cb ON mb.c tg_barang_id=cb.id where cb.type_barang_id="+categoryDv.getId()+" and mb.nm_barang like '%"+str+"%'";

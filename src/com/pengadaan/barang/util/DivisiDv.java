@@ -3,18 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Util;
+package com.pengadaan.barang.util;
+
+import com.pengadaan.barang.produk.*;
 
 /**
  *
  * @author yudith
  */
-public class CategoryBarangDv {
+public class DivisiDv {
     
     private int id;
     private String name;
 
-    public CategoryBarangDv(int id,String name){
+    public DivisiDv(int id,String name){
         this.id = id;
         this.name= name;
     }
