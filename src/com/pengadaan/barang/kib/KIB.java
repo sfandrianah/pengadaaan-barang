@@ -78,6 +78,7 @@ public class KIB extends javax.swing.JFrame {
 
             String sql = "Select * from mst_category_barang where type_barang_id=1";
             Statement st = aplikasiInventory.config.getConnection().createStatement();
+            jComboBox1.addItem(new CategoryBarangDv(0,"Report All"));
             ResultSet set;
             set = st.executeQuery(sql);
             int no = 0;
@@ -279,7 +280,7 @@ public class KIB extends javax.swing.JFrame {
 
         Workbook wb = new HSSFWorkbook();
         Sheet sheet = wb.createSheet("KIB - " + jComboBox1.getSelectedItem().toString());
-
+CategoryBarangDv categoryDv = (CategoryBarangDv) jComboBox1.getSelectedItem();
         SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println(dt1.format(jXDatePicker1.getDate()));
         startdate = dt1.format(jXDatePicker1.getDate());
@@ -311,7 +312,12 @@ public class KIB extends javax.swing.JFrame {
 
         rowss = sheet.createRow((short) 6);
         Cell cellcol2 = rowss.createCell((short) 0);
-        cellcol2.setCellValue(jComboBox1.getSelectedItem().toString());
+        if(categoryDv.getId() == 0){
+        cellcol2.setCellValue("BUKU PENERIMAAN BARANG");
+        }else{
+            cellcol2.setCellValue(jComboBox1.getSelectedItem().toString());
+        }
+        
         cellcol2.setCellStyle(cellStyle);
 
         rowss = sheet.createRow((short) 7);
@@ -321,6 +327,13 @@ public class KIB extends javax.swing.JFrame {
 
         CellStyle style = wb.createCellStyle(); //Create new style
         style.setWrapText(true);
+
+        CellStyle cellStylefooter = wb.createCellStyle();
+        cellStylefooter.setBorderLeft(CellStyle.BORDER_THIN);
+        cellStylefooter.setBorderRight(CellStyle.BORDER_THIN);
+        cellStylefooter.setBorderBottom(CellStyle.BORDER_THIN);
+        cellStylefooter.setBorderTop(CellStyle.BORDER_THIN);
+        cellStylefooter.setAlignment(CellStyle.ALIGN_CENTER);
 
         // cell = rowss.createCell(0);
         CellStyle cellStyleheader = wb.createCellStyle();
@@ -385,140 +398,290 @@ public class KIB extends javax.swing.JFrame {
 
 //            System.out.println(headerlist[ih]);
         String[][] kolomarray;
+
+        int jmctg = 0;
         int hat = 0;
-        for (int jt = 0; jt < jTable1.getRowCount(); jt++) {
+        Double totaldbstjt = 0D;
+        Double totaldastjt = 0D;
+        Cell cellfooter;
+        
+        int jumlahrow = 0;
+        if (categoryDv.getId() != 5) {
+            
+            for (int jt = 0; jt < jTable1.getRowCount(); jt++) {
 
-            String kolom1 = jTabel.getValueAt(jt, 0).toString();
-            String kolom2 = jTabel.getValueAt(jt, 1).toString();
-            String kolom3 = jTabel.getValueAt(jt, 2).toString();
-            String kolom4 = jTabel.getValueAt(jt, 3).toString();
-            String kolom5 = jTabel.getValueAt(jt, 4).toString();
-            String kolom6 = jTabel.getValueAt(jt, 5).toString();
-            String kolom7 = jTabel.getValueAt(jt, 6).toString();
-            String kolom8 = jTabel.getValueAt(jt, 7).toString();
-            String kolom9 = jTabel.getValueAt(jt, 8).toString();
-            String kolom10 = jTabel.getValueAt(jt, 9).toString();
-            String kolom11 = jTabel.getValueAt(jt, 10).toString();
-            String kolom12 = jTabel.getValueAt(jt, 11).toString();
-            String kolom13 = jTabel.getValueAt(jt, 12).toString();
-            String kolom14 = jTabel.getValueAt(jt, 13).toString();
-            String kolom15 = jTabel.getValueAt(jt, 14).toString();
-            String kolom16 = jTabel.getValueAt(jt, 15).toString();
-            String kolom17 = jTabel.getValueAt(jt, 16).toString();
-            String kolom18 = jTabel.getValueAt(jt, 17).toString();
-            String kolom19 = jTabel.getValueAt(jt, 18).toString();
-            String kolom20 = jTabel.getValueAt(jt, 19).toString();
-            String kolom21 = jTabel.getValueAt(jt, 20).toString();
-            String kolom22 = jTabel.getValueAt(jt, 21).toString();
+                String kolom1 = jTabel.getValueAt(jt, 0).toString();
+                String kolom2 = jTabel.getValueAt(jt, 1).toString();
+                String kolom3 = jTabel.getValueAt(jt, 2).toString();
+                String kolom4 = jTabel.getValueAt(jt, 3).toString();
+                String kolom5 = jTabel.getValueAt(jt, 4).toString();
+                String kolom6 = jTabel.getValueAt(jt, 5).toString();
+                String kolom7 = jTabel.getValueAt(jt, 6).toString();
+                String kolom8 = jTabel.getValueAt(jt, 7).toString();
+                String kolom9 = jTabel.getValueAt(jt, 8).toString();
+                String kolom10 = jTabel.getValueAt(jt, 9).toString();
+                String kolom11 = jTabel.getValueAt(jt, 10).toString();
+                String kolom12 = jTabel.getValueAt(jt, 11).toString();
+                String kolom13 = jTabel.getValueAt(jt, 12).toString();
+                String kolom14 = jTabel.getValueAt(jt, 13).toString();
+                String kolom15 = jTabel.getValueAt(jt, 14).toString();
+                String kolom16 = jTabel.getValueAt(jt, 15).toString();
+                String kolom17 = jTabel.getValueAt(jt, 16).toString();
+                String kolom18 = jTabel.getValueAt(jt, 17).toString();
+                String kolom19 = jTabel.getValueAt(jt, 18).toString();
+                String kolom20 = jTabel.getValueAt(jt, 19).toString();
+                String kolom21 = jTabel.getValueAt(jt, 20).toString();
+                String kolom22 = jTabel.getValueAt(jt, 21).toString();
 
-            kolomarray = new String[jTable1.getRowCount()][20];
-            kolomarray[jt][0] = kolom1;
-            kolomarray[jt][1] = kolom3;
-            kolomarray[jt][2] = kolom4;
-            kolomarray[jt][3] = kolom6;
-            kolomarray[jt][4] = kolom7;
-            kolomarray[jt][5] = kolom8;
-            kolomarray[jt][6] = kolom9;
-            kolomarray[jt][7] = kolom10;
-            kolomarray[jt][8] = kolom11;
-            kolomarray[jt][9] = kolom12;
-            kolomarray[jt][10] = kolom13;
-            kolomarray[jt][11] = kolom14;
-            kolomarray[jt][12] = kolom15;
-            kolomarray[jt][13] = kolom16;
-            kolomarray[jt][14] = kolom17;
-            kolomarray[jt][15] = kolom18;
-            kolomarray[jt][16] = kolom19;
-            kolomarray[jt][17] = kolom20;
-            kolomarray[jt][18] = kolom21;
-            kolomarray[jt][19] = kolom22;
+                kolomarray = new String[jTable1.getRowCount()][20];
+                kolomarray[jt][0] = kolom1;
+                kolomarray[jt][1] = kolom3;
+                kolomarray[jt][2] = kolom4;
+                kolomarray[jt][3] = kolom6;
+                kolomarray[jt][4] = kolom7;
+                kolomarray[jt][5] = kolom8;
+                kolomarray[jt][6] = kolom9;
+                kolomarray[jt][7] = kolom10;
+                kolomarray[jt][8] = kolom11;
+                kolomarray[jt][9] = kolom12;
+                kolomarray[jt][10] = kolom13;
+                kolomarray[jt][11] = kolom14;
+                kolomarray[jt][12] = kolom15;
+                kolomarray[jt][13] = kolom16;
+                kolomarray[jt][14] = kolom17;
+                kolomarray[jt][15] = kolom18;
+                kolomarray[jt][16] = kolom19;
+                kolomarray[jt][17] = kolom20;
+                kolomarray[jt][18] = kolom21;
+                kolomarray[jt][19] = kolom22;
 
-            Double totalall;
+                rowss = sheet.createRow((short) 10 + jt);
+                totaldbstjt += Double.valueOf(kolomarray[jt][18]);
+                for (int ii = 0; ii < kolomarray[jt].length; ii++) {
+                    cellisi = rowss.createCell((short) ii);
+                    cellisi.setCellValue(kolomarray[jt][ii]);
+                    cellisi.setCellStyle(cellStyleisi);
+                }
+            }
+            jmctg = 10;
+        } else {
+            jmctg = 14;
+            rowss = sheet.createRow((short) 10);
+            for (int ih = 0; ih < headerlist2.length; ih++) {
+                if (ih == 0) {
+                    cellheader = rowss.createCell((short) ih);
+                    cellheader.setCellValue("BMD DIATAS 1 JUTA");
+                    cellheader.setCellStyle(cellStyleheader1);
+                } else {
+                    cellheader = rowss.createCell((short) ih);
+                    cellheader.setCellValue("");
+                    cellheader.setCellStyle(cellStyleheader1);
+                }
+
+            }
+            for (int jt = 0; jt < jTable1.getRowCount(); jt++) {
+
+                String kolom1 = jTabel.getValueAt(jt, 0).toString();
+                String kolom2 = jTabel.getValueAt(jt, 1).toString();
+                String kolom3 = jTabel.getValueAt(jt, 2).toString();
+                String kolom4 = jTabel.getValueAt(jt, 3).toString();
+                String kolom5 = jTabel.getValueAt(jt, 4).toString();
+                String kolom6 = jTabel.getValueAt(jt, 5).toString();
+                String kolom7 = jTabel.getValueAt(jt, 6).toString();
+                String kolom8 = jTabel.getValueAt(jt, 7).toString();
+                String kolom9 = jTabel.getValueAt(jt, 8).toString();
+                String kolom10 = jTabel.getValueAt(jt, 9).toString();
+                String kolom11 = jTabel.getValueAt(jt, 10).toString();
+                String kolom12 = jTabel.getValueAt(jt, 11).toString();
+                String kolom13 = jTabel.getValueAt(jt, 12).toString();
+                String kolom14 = jTabel.getValueAt(jt, 13).toString();
+                String kolom15 = jTabel.getValueAt(jt, 14).toString();
+                String kolom16 = jTabel.getValueAt(jt, 15).toString();
+                String kolom17 = jTabel.getValueAt(jt, 16).toString();
+                String kolom18 = jTabel.getValueAt(jt, 17).toString();
+                String kolom19 = jTabel.getValueAt(jt, 18).toString();
+                String kolom20 = jTabel.getValueAt(jt, 19).toString();
+                String kolom21 = jTabel.getValueAt(jt, 20).toString();
+                String kolom22 = jTabel.getValueAt(jt, 21).toString();
+
+                kolomarray = new String[jTable1.getRowCount()][20];
+                kolomarray[jt][0] = kolom1;
+                kolomarray[jt][1] = kolom3;
+                kolomarray[jt][2] = kolom4;
+                kolomarray[jt][3] = kolom6;
+                kolomarray[jt][4] = kolom7;
+                kolomarray[jt][5] = kolom8;
+                kolomarray[jt][6] = kolom9;
+                kolomarray[jt][7] = kolom10;
+                kolomarray[jt][8] = kolom11;
+                kolomarray[jt][9] = kolom12;
+                kolomarray[jt][10] = kolom13;
+                kolomarray[jt][11] = kolom14;
+                kolomarray[jt][12] = kolom15;
+                kolomarray[jt][13] = kolom16;
+                kolomarray[jt][14] = kolom17;
+                kolomarray[jt][15] = kolom18;
+                kolomarray[jt][16] = kolom19;
+                kolomarray[jt][17] = kolom20;
+                kolomarray[jt][18] = kolom21;
+                kolomarray[jt][19] = kolom22;
+
+                Double totalall;
 
 //            System.out.println("price = "+kolomarray[jt][18]);
 //            int nu=0;
-            if (Double.valueOf(kolomarray[jt][18]) <= 1000000) {
-                hat += 1;
-                rowss = sheet.createRow((short) 10);
-                for (int ih = 0; ih < headerlist2.length; ih++) {
-                    if (ih == 0) {
-                        cellheader = rowss.createCell((short) ih);
-                        cellheader.setCellValue("BMD DIBAWAH 1 JUTA");
-                        cellheader.setCellStyle(cellStyleheader1);
-                    } else {
-                        cellheader = rowss.createCell((short) ih);
-                        cellheader.setCellValue("");
-                        cellheader.setCellStyle(cellStyleheader1);
+                if (Double.valueOf(kolomarray[jt][16]) > 1000000) {
+                    hat += 1;
+                    totaldastjt += Double.valueOf(kolomarray[jt][18]);
+                    rowss = sheet.createRow((short) 11 + jt);
+                    for (int ii = 0; ii < kolomarray[jt].length; ii++) {
+                        cellisi = rowss.createCell((short) ii);
+                        cellisi.setCellValue(kolomarray[jt][ii]);
+//                    System.out.println("tes" + kolomarray[jt][ii]);
+                        cellisi.setCellStyle(cellStyleisi);
                     }
 
                 }
-                rowss = sheet.createRow((short) 11 + jt);
-                for (int ii = 0; ii < kolomarray[jt].length; ii++) {
-                    cellisi = rowss.createCell((short) ii);
-                    cellisi.setCellValue(kolomarray[jt][ii]);
-//                    System.out.println("tes" + kolomarray[jt][ii]);
-                    cellisi.setCellStyle(cellStyleisi);
-                }
-            } else {
-                System.out.println("jt="+jt+"hat="+hat);
-                if (jt == hat) {
-                     System.out.println("masuk diatas");
-                    rowss = sheet.createRow((short) 11 + hat);
-                    
-                    for (int ih = 0; ih < headerlist2.length; ih++) {
-                        if (ih == 0) {
-                            cellheader = rowss.createCell((short) ih);
-                            cellheader.setCellValue("BMD DIATAS 1 JUTA");
-                            cellheader.setCellStyle(cellStyleheader1);
-                        } else {
-                            cellheader = rowss.createCell((short) ih);
-                            cellheader.setCellValue("");
-                            cellheader.setCellStyle(cellStyleheader1);
-                        }
-
-                    }
-                    sheet.addMergedRegion(new CellRangeAddress(11 + hat, 11 + hat, 0, 19));
-                } else {
-                rowss = sheet.createRow((short) 11 + jt);
-                for (int ii = 0; ii < kolomarray[jt].length; ii++) {
-                    cellisi = rowss.createCell((short) ii);
-                    cellisi.setCellValue(kolomarray[jt][ii]);
-//                    System.out.println("tes" + kolomarray[jt][ii]);
-                    cellisi.setCellStyle(cellStyleisi);
-                }
-                }
-            }
 //            System.out.println("jt = "+jt);
 
-        }
-        CellStyle cellStylefooter = wb.createCellStyle();
-        cellStylefooter.setBorderLeft(CellStyle.BORDER_THIN);
-        cellStylefooter.setBorderRight(CellStyle.BORDER_THIN);
-        cellStylefooter.setBorderBottom(CellStyle.BORDER_THIN);
-        cellStylefooter.setBorderTop(CellStyle.BORDER_THIN);
-        cellStylefooter.setAlignment(CellStyle.ALIGN_CENTER);
-        int jumlahrow = jTable1.getRowCount() + 12;
-//        int jumlahrow2 = jTable1.getRowCount() + 11;
-        rowss = sheet.createRow((short) jumlahrow);
-        Cell cellfooter;
-        for (int ih = 0; ih < headerlist.length; ih++) {
-            cellfooter = rowss.createCell((short) ih);
-            cellfooter.setCellValue("");
-            cellfooter.setCellStyle(cellStylefooter);
-//            System.out.println(headerlist[ih]);
-        }
-        rowss = sheet.createRow((short) jumlahrow + 1);
-        for (int ih = 0; ih < headerlist.length; ih++) {
-            cellfooter = rowss.createCell((short) ih);
-            if (ih == 3) {
-                cellfooter.setCellValue("Total");
-            } else {
-                cellfooter.setCellValue("");
             }
 
-            cellfooter.setCellStyle(cellStylefooter);
+            int jumlahrows = 11 + hat;
+//        int jumlahrow2 = jTable1.getRowCount() + 11;
+            rowss = sheet.createRow((short) jumlahrows);
+            
+            for (int ih = 0; ih < headerlist.length; ih++) {
+                cellfooter = rowss.createCell((short) ih);
+                cellfooter.setCellValue("");
+                cellfooter.setCellStyle(cellStylefooter);
 //            System.out.println(headerlist[ih]);
+            }
+            rowss = sheet.createRow((short) jumlahrows + 1);
+            for (int ih = 0; ih < headerlist.length; ih++) {
+                cellfooter = rowss.createCell((short) ih);
+                if (ih == 3) {
+                    cellfooter.setCellValue("Total");
+                } else if (ih == 18) {
+                    cellfooter.setCellValue(totaldastjt);
+                } else {
+                    cellfooter.setCellValue("");
+                }
+
+                cellfooter.setCellStyle(cellStylefooter);
+//            System.out.println(headerlist[ih]);
+            }
+
+            rowss = sheet.createRow((short) 13 + hat);
+            for (int ih = 0; ih < headerlist2.length; ih++) {
+                if (ih == 0) {
+                    cellheader = rowss.createCell((short) ih);
+                    cellheader.setCellValue("BMD DIBAWAH 1 JUTA");
+                    cellheader.setCellStyle(cellStyleheader1);
+                } else {
+                    cellheader = rowss.createCell((short) ih);
+                    cellheader.setCellValue("");
+                    cellheader.setCellStyle(cellStyleheader1);
+                }
+
+            }
+
+            for (int jt = 0; jt < jTable1.getRowCount(); jt++) {
+
+                String kolom1 = jTabel.getValueAt(jt, 0).toString();
+                String kolom2 = jTabel.getValueAt(jt, 1).toString();
+                String kolom3 = jTabel.getValueAt(jt, 2).toString();
+                String kolom4 = jTabel.getValueAt(jt, 3).toString();
+                String kolom5 = jTabel.getValueAt(jt, 4).toString();
+                String kolom6 = jTabel.getValueAt(jt, 5).toString();
+                String kolom7 = jTabel.getValueAt(jt, 6).toString();
+                String kolom8 = jTabel.getValueAt(jt, 7).toString();
+                String kolom9 = jTabel.getValueAt(jt, 8).toString();
+                String kolom10 = jTabel.getValueAt(jt, 9).toString();
+                String kolom11 = jTabel.getValueAt(jt, 10).toString();
+                String kolom12 = jTabel.getValueAt(jt, 11).toString();
+                String kolom13 = jTabel.getValueAt(jt, 12).toString();
+                String kolom14 = jTabel.getValueAt(jt, 13).toString();
+                String kolom15 = jTabel.getValueAt(jt, 14).toString();
+                String kolom16 = jTabel.getValueAt(jt, 15).toString();
+                String kolom17 = jTabel.getValueAt(jt, 16).toString();
+                String kolom18 = jTabel.getValueAt(jt, 17).toString();
+                String kolom19 = jTabel.getValueAt(jt, 18).toString();
+                String kolom20 = jTabel.getValueAt(jt, 19).toString();
+                String kolom21 = jTabel.getValueAt(jt, 20).toString();
+                String kolom22 = jTabel.getValueAt(jt, 21).toString();
+
+                kolomarray = new String[jTable1.getRowCount()][20];
+                kolomarray[jt][0] = kolom1;
+                kolomarray[jt][1] = kolom3;
+                kolomarray[jt][2] = kolom4;
+                kolomarray[jt][3] = kolom6;
+                kolomarray[jt][4] = kolom7;
+                kolomarray[jt][5] = kolom8;
+                kolomarray[jt][6] = kolom9;
+                kolomarray[jt][7] = kolom10;
+                kolomarray[jt][8] = kolom11;
+                kolomarray[jt][9] = kolom12;
+                kolomarray[jt][10] = kolom13;
+                kolomarray[jt][11] = kolom14;
+                kolomarray[jt][12] = kolom15;
+                kolomarray[jt][13] = kolom16;
+                kolomarray[jt][14] = kolom17;
+                kolomarray[jt][15] = kolom18;
+                kolomarray[jt][16] = kolom19;
+                kolomarray[jt][17] = kolom20;
+                kolomarray[jt][18] = kolom21;
+                kolomarray[jt][19] = kolom22;
+
+                Double totalall;
+
+//            System.out.println("price = "+kolomarray[jt][18]);
+//            int nu=0;
+                if (Double.valueOf(kolomarray[jt][16]) <= 1000000) {
+                    System.out.println("harga " + kolomarray[jt][18]);
+                    rowss = sheet.createRow((short) 14 + jt);
+                    totaldbstjt += Double.valueOf(kolomarray[jt][18]);
+                    for (int ii = 0; ii < kolomarray[jt].length; ii++) {
+                        cellisi = rowss.createCell((short) ii);
+                        cellisi.setCellValue(kolomarray[jt][ii]);
+//                    System.out.println("tes" + kolomarray[jt][ii]);
+                        cellisi.setCellStyle(cellStyleisi);
+                    }
+
+                }
+//            System.out.println("jt = "+jt);
+
+            }
+            
+        sheet.addMergedRegion(new CellRangeAddress(10, 10, 0, 19));
+        sheet.addMergedRegion(new CellRangeAddress(13 + hat, 13 + hat, 0, 19));
         }
+        
+        
+
+            jumlahrow = jTable1.getRowCount() + jmctg;
+//        int jumlahrow2 = jTable1.getRowCount() + 11;
+            rowss = sheet.createRow((short) jumlahrow);
+//        Cell cellfooter;
+            for (int ih = 0; ih < headerlist.length; ih++) {
+                cellfooter = rowss.createCell((short) ih);
+                cellfooter.setCellValue("");
+                cellfooter.setCellStyle(cellStylefooter);
+//            System.out.println(headerlist[ih]);
+            }
+            rowss = sheet.createRow((short) jumlahrow + 1);
+            for (int ih = 0; ih < headerlist.length; ih++) {
+                cellfooter = rowss.createCell((short) ih);
+                if (ih == 3) {
+                    cellfooter.setCellValue("Total");
+                } else if (ih == 18) {
+                    cellfooter.setCellValue(totaldbstjt);
+                } else {
+                    cellfooter.setCellValue("");
+                }
+
+                cellfooter.setCellStyle(cellStylefooter);
+//            System.out.println(headerlist[ih]);
+            }
 
 //BAGIAN TANDA TANGAN
         CellStyle cellstyletd1 = wb.createCellStyle();
@@ -578,7 +741,6 @@ public class KIB extends javax.swing.JFrame {
         celltd.setCellStyle(cellstyletd);
 
         sheet.addMergedRegion(new CellRangeAddress(5, 5, 0, 19));
-        sheet.addMergedRegion(new CellRangeAddress(10, 10, 0, 19));
         sheet.addMergedRegion(new CellRangeAddress(6, 6, 0, 19));
         sheet.addMergedRegion(new CellRangeAddress(7, 7, 0, 19));
 //        rowss.set
@@ -599,7 +761,7 @@ public class KIB extends javax.swing.JFrame {
 
         sheet.setColumnWidth(15, 5000);
         sheet.autoSizeColumn(3);
-        sheet.autoSizeColumn(15);
+//        sheet.autoSizeColumn(15);
 //            sheet.addMergedRegion(new CellRangeAddress(
 //                    0, //first row (0-based)
 //                    0, //last row  (0-based)
@@ -612,145 +774,7 @@ public class KIB extends javax.swing.JFrame {
         String strDate = sdfDate.format(now);
 
         //wb = new HSSFWorkbook();
-        Sheet sheet2 = wb.createSheet("Daftar Barang");
-        Row rows2 = sheet2.createRow((short) 0);
-        Cell cellDb = rows2.createCell((short) 0);
-        cellDb.setCellValue("Daftar Pengadaan Barang " + util.getMonth(startdate) + " - " + util.getMonth(enddate));
-        CellStyle cellStyleDb = wb.createCellStyle();
-        Font font = wb.createFont();//Create font
-        font.setBoldweight(Font.BOLDWEIGHT_BOLD);//Make font bold
-        cellStyleDb.setFont(font);//set it to bold
-        cellStyleDb.setAlignment(CellStyle.ALIGN_CENTER);
-        cellDb.setCellStyle(cellStyleDb);
-
-        rows2 = sheet2.createRow((short) 3);
-        rows2.setHeight((short) 400);
-        Cell cellDb1 = rows2.createCell((short) 0);
-        cellDb1.setCellValue("No");
-        CellStyle cellStyleDb1 = wb.createCellStyle();//set it to bold
-        cellStyleDb1.setAlignment(CellStyle.ALIGN_CENTER);
-        cellStyleDb1.setBorderLeft(CellStyle.BORDER_THIN);
-        cellStyleDb1.setBorderRight(CellStyle.BORDER_THIN);
-        cellStyleDb1.setBorderTop(CellStyle.BORDER_THIN);
-        cellStyleDb1.setBorderBottom(CellStyle.BORDER_THIN);
-        cellDb1.setCellStyle(cellStyleDb1);
-
-        Cell cellDb2 = rows2.createCell((short) 1);
-        cellDb2.setCellValue("Nama Barang");
-        cellDb2.setCellStyle(cellStyleDb1);
-
-        Cell cellDb7 = rows2.createCell((short) 2);
-        cellDb7.setCellValue("Banyaknya");
-        cellDb7.setCellStyle(cellStyleDb1);
-
-        Cell cellDb3 = rows2.createCell((short) 3);
-        cellDb3.setCellValue("Satuan");
-        cellDb3.setCellStyle(cellStyleDb1);
-
-        Cell cellDb4 = rows2.createCell((short) 4);
-        cellDb4.setCellValue("Harga Satuan");
-        cellDb4.setCellStyle(cellStyleDb1);
-
-        Cell cellDb5 = rows2.createCell((short) 5);
-        cellDb5.setCellValue("Honor + Admin");
-        cellDb5.setCellStyle(cellStyleDb1);
-
-        Cell cellDb6 = rows2.createCell((short) 6);
-        cellDb6.setCellValue("Jumlah");
-        cellDb6.setCellStyle(cellStyleDb1);
-
-        int i;
-        for (i = 0; i < jTable1.getRowCount(); i++) {
-            int n = i + 1;
-
-            String kolom2 = jTable1.getValueAt(i, 1).toString();
-            String kolom3 = jTable1.getValueAt(i, 2).toString();
-            String kolom4 = jTable1.getValueAt(i, 3).toString();
-            String kolom5 = jTable1.getValueAt(i, 4).toString();
-            String kolom6 = jTable1.getValueAt(i, 5).toString();
-            String kolom7 = jTable1.getValueAt(i, 6).toString();
-
-            int rownya = i + 4;
-            rows2 = sheet2.createRow((short) rownya);
-            Cell cellDb11 = rows2.createCell((short) 0);
-            cellDb11.setCellValue(n);
-            CellStyle cellStyleDb11 = wb.createCellStyle();//set it to bold
-//                cellStyleDb11.setAlignment(CellStyle.ALIGN_CENTER);
-            cellStyleDb11.setBorderLeft(CellStyle.BORDER_THIN);
-            cellStyleDb11.setBorderRight(CellStyle.BORDER_THIN);
-            cellStyleDb11.setBorderBottom(CellStyle.BORDER_DOTTED);
-            cellDb11.setCellStyle(cellStyleDb11);
-
-            Cell cellDb12 = rows2.createCell((short) 1);
-            cellDb12.setCellValue(kolom2);
-            cellDb12.setCellStyle(cellStyleDb11);
-
-            Cell cellDb13 = rows2.createCell((short) 2);
-            cellDb13.setCellValue(kolom3);
-            cellDb13.setCellStyle(cellStyleDb11);
-
-            Cell cellDb14 = rows2.createCell((short) 3);
-            cellDb14.setCellValue(kolom4);
-            cellDb14.setCellStyle(cellStyleDb11);
-
-            Cell cellDb15 = rows2.createCell((short) 4);
-            cellDb15.setCellValue(kolom5);
-            cellDb15.setCellStyle(cellStyleDb11);
-
-            Cell cellDb16 = rows2.createCell((short) 5);
-            cellDb16.setCellValue(kolom6);
-            cellDb16.setCellStyle(cellStyleDb11);
-
-            Cell cellDb17 = rows2.createCell((short) 6);
-            cellDb17.setCellValue(kolom7);
-            cellDb17.setCellStyle(cellStyleDb11);
-
-        }
-
-        int rownyafot = jTable1.getRowCount() + 4;
-        rows2 = sheet2.createRow((short) rownyafot);
-        Cell cellDb21 = rows2.createCell((short) 0);
-        cellDb21.setCellValue("");
-        CellStyle cellStyleDb21 = wb.createCellStyle();//set it to bold
-        cellStyleDb21.setAlignment(CellStyle.ALIGN_CENTER);
-        cellStyleDb21.setBorderLeft(CellStyle.BORDER_THIN);
-        cellStyleDb21.setBorderRight(CellStyle.BORDER_THIN);
-        cellStyleDb21.setBorderBottom(CellStyle.BORDER_THIN);
-        cellStyleDb21.setBorderTop(CellStyle.BORDER_THIN);
-        cellDb21.setCellStyle(cellStyleDb21);
-
-        Cell cellDb22 = rows2.createCell((short) 1);
-        cellDb22.setCellValue("Jumlah");
-        cellDb22.setCellStyle(cellStyleDb21);
-
-        Cell cellDb23 = rows2.createCell((short) 2);
-        cellDb23.setCellValue("");
-        cellDb23.setCellStyle(cellStyleDb21);
-
-        Cell cellDb24 = rows2.createCell((short) 3);
-        cellDb24.setCellValue("");
-        cellDb24.setCellStyle(cellStyleDb21);
-
-        Cell cellDb25 = rows2.createCell((short) 4);
-        cellDb25.setCellValue("");
-        cellDb25.setCellStyle(cellStyleDb21);
-
-        Cell cellDb26 = rows2.createCell((short) 5);
-        cellDb26.setCellValue("");
-        cellDb26.setCellStyle(cellStyleDb21);
-
-        Cell cellDb27 = rows2.createCell((short) 6);
-        cellDb27.setCellValue("");
-        cellDb27.setCellStyle(cellStyleDb21);
-
-        sheet2.addMergedRegion(new CellRangeAddress(0, 1, 0, 6));
-        sheet2.autoSizeColumn(0);
-        sheet2.autoSizeColumn(1);
-        sheet2.autoSizeColumn(2);
-        sheet2.autoSizeColumn(3);
-        sheet2.autoSizeColumn(4);
-        sheet2.autoSizeColumn(5);
-        sheet2.autoSizeColumn(6);
+        
 
         // FileOutputStream fileOut = new FileOutputStream("D:\\excel\\workbook-"+strDate+".xls");
         File yourFile = new File("KIB.xls");
@@ -791,9 +815,18 @@ public class KIB extends javax.swing.JFrame {
 //            DfltTblMode = new DefaultTableModel();
 
             jTabel.setModel(DfltTblMode);
-            String sql = "SELECT * FROM trx_asset_item ts where ts.trx_asset_item_date "
+            String sql = "";
+            CategoryBarangDv categoryDv = (CategoryBarangDv) jComboBox1.getSelectedItem();
+            if(categoryDv.getId() == 0){
+                sql = "SELECT * FROM trx_asset_item ts where ts.trx_asset_item_date "
+                    + "BETWEEN '" + startdate + "' and '" + enddate + "'"
+                    + " ORDER BY trx_asset_item_price_jumlah desc";
+            } else {
+                sql = "SELECT * FROM trx_asset_item ts where ts.trx_asset_item_date "
                     + "BETWEEN '" + startdate + "' and '" + enddate + "' and ts.category_barang_id=" + idcategory
-                    + " ORDER BY trx_asset_item_price_jumlah asc";
+                    + " ORDER BY trx_asset_item_price_jumlah desc";
+            }
+            
             System.out.println(sql);
             Statement st = aplikasiInventory.config.getConnection().createStatement();
             ResultSet set = st.executeQuery(sql);
