@@ -3,17 +3,37 @@ Navicat MySQL Data Transfer
 
 Source Server         : localhost
 Source Server Version : 50621
-Source Host           : 127.0.0.1:3306
+Source Host           : localhost:3306
 Source Database       : pengadaan_barang
 
 Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2015-09-03 00:36:37
+Date: 2015-09-04 23:17:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for karyawan
+-- ----------------------------
+DROP TABLE IF EXISTS `karyawan`;
+CREATE TABLE `karyawan` (
+  `NIK` varchar(15) NOT NULL,
+  `NM_KRYWN` varchar(30) NOT NULL,
+  `JABATAN` varchar(30) NOT NULL,
+  `EMAIL` varchar(30) NOT NULL,
+  `PASS` varchar(15) NOT NULL,
+  PRIMARY KEY (`NIK`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of karyawan
+-- ----------------------------
+INSERT INTO `karyawan` VALUES ('2012001', 'cilik', 'Teknisi', 'cilik@super.com', 'tes');
+INSERT INTO `karyawan` VALUES ('2012002', 'anthem', 'Admin', 'anthem@ymail.co.id', 'mimin');
+INSERT INTO `karyawan` VALUES ('2012003', 'symphony', 'Administrator', 'symphony@rocketmail.co.au', 'momod');
 
 -- ----------------------------
 -- Table structure for mst_barang
@@ -90,16 +110,18 @@ CREATE TABLE `mst_category_barang` (
   `status` varchar(2) DEFAULT NULL,
   `type_barang_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of mst_category_barang
 -- ----------------------------
-INSERT INTO `mst_category_barang` VALUES ('1', '001', 'ALAT TULIS KANTOR', 'A', '2');
-INSERT INTO `mst_category_barang` VALUES ('2', '002', 'ALAT KEBERSIHAN', 'A', '2');
-INSERT INTO `mst_category_barang` VALUES ('3', '003', 'ALAT LISTRIK', 'A', '2');
-INSERT INTO `mst_category_barang` VALUES ('4', '004', 'PERALATAN DAN MESIN ', 'A', '2');
-INSERT INTO `mst_category_barang` VALUES ('5', '005', 'ASSET', 'A', '1');
+INSERT INTO `mst_category_barang` VALUES ('1', 'BHP001', 'ALAT TULIS KANTOR', 'A', '2');
+INSERT INTO `mst_category_barang` VALUES ('2', 'BHP002', 'ALAT KEBERSIHAN', 'A', '2');
+INSERT INTO `mst_category_barang` VALUES ('3', 'BHP003', 'ALAT LISTRIK', 'A', '2');
+INSERT INTO `mst_category_barang` VALUES ('4', 'BHP004', 'PERALATAN DAN MESIN ', 'A', '2');
+INSERT INTO `mst_category_barang` VALUES ('5', 'AST001', 'PERALATAN DAN MESIN', 'A', '1');
+INSERT INTO `mst_category_barang` VALUES ('6', 'AST002', 'ASSET TAK BERWUJUD LAINNYA', 'A', '1');
+INSERT INTO `mst_category_barang` VALUES ('7', 'AST003', '522', 'A', '1');
 
 -- ----------------------------
 -- Table structure for mst_divisi
@@ -195,6 +217,51 @@ INSERT INTO `mst_user` VALUES ('2012001', 'cilik', 'Teknisi', 'cilik@super.com',
 INSERT INTO `mst_user` VALUES ('2012002', 'anthem', 'Admin', 'anthem@ymail.co.id', 'mimin');
 
 -- ----------------------------
+-- Table structure for trx_asset_item
+-- ----------------------------
+DROP TABLE IF EXISTS `trx_asset_item`;
+CREATE TABLE `trx_asset_item` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `trx_asset_item_date` date DEFAULT NULL,
+  `trx_asset_item_code_lokasi` varchar(255) DEFAULT NULL,
+  `trx_asset_item_code_barang` varchar(255) DEFAULT NULL,
+  `divisi_id` int(11) DEFAULT NULL,
+  `category_barang_id` int(11) DEFAULT NULL,
+  `trx_asset_item_barang` varchar(255) DEFAULT NULL,
+  `trx_asset_item_no_reg` varchar(255) DEFAULT NULL,
+  `trx_asset_item_jumlah` int(11) DEFAULT NULL,
+  `trx_asset_item_merk` varchar(255) DEFAULT NULL,
+  `trx_asset_item_ukuran` varchar(255) DEFAULT NULL,
+  `trx_asset_item_bahan` varchar(255) DEFAULT NULL,
+  `trx_asset_item_tahun` varchar(255) DEFAULT NULL,
+  `trx_asset_item_no_pabrik` varchar(255) DEFAULT NULL,
+  `trx_asset_item_no_rangka` varchar(255) DEFAULT NULL,
+  `trx_asset_item_no_mesin` varchar(255) DEFAULT NULL,
+  `trx_asset_item_no_polisi` varchar(255) DEFAULT NULL,
+  `trx_asset_item_no_bpkb` varchar(255) DEFAULT NULL,
+  `trx_asset_item_cr_prl` varchar(255) DEFAULT NULL,
+  `trx_asset_item_price` double DEFAULT NULL,
+  `trx_asset_item_honor` double DEFAULT NULL,
+  `trx_asset_item_price_jumlah` double DEFAULT NULL,
+  `trx_asset_item_ket` varchar(255) DEFAULT NULL,
+  `trx_asset_item_type` int(1) DEFAULT NULL,
+  `created_on` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of trx_asset_item
+-- ----------------------------
+INSERT INTO `trx_asset_item` VALUES ('2', '2015-09-03', '', '', '1', '5', 'Sepeda Motor', '', '4', 'Suzuki Shogun', '125CC', '', '2009', '', '', '', '', '', 'APBD', '0', '0', '0', '', '1', '2015-09-03');
+INSERT INTO `trx_asset_item` VALUES ('3', '2015-09-04', '', '', '1', '5', 'Printer', '', '4', 'Samsung ML-1640 Laser Je', '', '', '2009', '', '', '', '', '', 'APBD', '300000', '0', '1200000', '', '1', '2015-09-04');
+INSERT INTO `trx_asset_item` VALUES ('4', '2015-09-04', '', '', '1', '5', 'Printer', '', '1', 'HP Laser Jet P1006', '', '', '2009', '', '', '', '', '', 'APBD', '0', '0', '0', '', '1', '2015-09-04');
+INSERT INTO `trx_asset_item` VALUES ('5', '2015-09-04', '', '', '1', '5', 'Printer', '', '2', 'Epson LQ-2180', '', '', '', '', '', '', '', '', '', '600000', '0', '1200000', '', '1', '2015-09-04');
+INSERT INTO `trx_asset_item` VALUES ('6', '2015-09-04', '', '', '1', '5', 'PC Komp', '', '4', 'Acer Aspire 3710 Core 2 Duo E7 400', '', '', '2009', '', '', '', '', '', 'APBD', '3000000', '0', '12000000', '', '1', '2015-09-04');
+INSERT INTO `trx_asset_item` VALUES ('7', '2015-09-04', '', '', '1', '7', 'Kursi Lipat', '', '130', 'Chitose', 'Unit', '', '2014', '', '', '', '', '', '', '500000', '0', '65000000', '', '1', '2015-09-04');
+INSERT INTO `trx_asset_item` VALUES ('8', '2015-09-04', '', '', '1', '7', 'Gunting Rumput', '', '2', '', 'Unit', '', '2014', '', '', '', '', '', '', '400000', '0', '800000', '', '1', '2015-09-04');
+INSERT INTO `trx_asset_item` VALUES ('9', '2015-09-04', '', '', '1', '6', 'SOFTWARE', '', '1', '', '', '', '2014', '', '', '', '', '', '', '14000000', '0', '14000000', '', '1', '2015-09-04');
+
+-- ----------------------------
 -- Table structure for trx_pemasukan
 -- ----------------------------
 DROP TABLE IF EXISTS `trx_pemasukan`;
@@ -208,12 +275,13 @@ CREATE TABLE `trx_pemasukan` (
   `created_by` varchar(255) DEFAULT NULL,
   `created_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of trx_pemasukan
 -- ----------------------------
 INSERT INTO `trx_pemasukan` VALUES ('24', '0001/SO/08/2015', '2015-08-31', '1', '-', '0', null, null);
+INSERT INTO `trx_pemasukan` VALUES ('25', '003', '2015-09-04', '1', '-', '0', null, null);
 
 -- ----------------------------
 -- Table structure for trx_pemasukan_item
@@ -229,13 +297,14 @@ CREATE TABLE `trx_pemasukan_item` (
   `trx_total_pemasukan_item` double(255,0) DEFAULT NULL,
   `trx_pemasukan_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of trx_pemasukan_item
 -- ----------------------------
 INSERT INTO `trx_pemasukan_item` VALUES ('26', '11', 'Sapu Lantai', '36', '5000', '0', '180000', '24');
 INSERT INTO `trx_pemasukan_item` VALUES ('27', '12', 'Sapu Lidi Gagang', '12', '5000', '0', '60000', '24');
+INSERT INTO `trx_pemasukan_item` VALUES ('28', '14', 'Refill Kain Pel', '26', '5000', '0', '130000', '25');
 
 -- ----------------------------
 -- Table structure for trx_pengeluaran
@@ -251,12 +320,13 @@ CREATE TABLE `trx_pengeluaran` (
   `created_by` varchar(255) DEFAULT NULL,
   `created_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of trx_pengeluaran
 -- ----------------------------
 INSERT INTO `trx_pengeluaran` VALUES ('33', '0001/INV/09/2015', '2015-09-01', '1', '-', '0', null, null);
+INSERT INTO `trx_pengeluaran` VALUES ('34', '003', '2015-09-04', '1', '-', '0', null, null);
 
 -- ----------------------------
 -- Table structure for trx_pengeluaran_item
@@ -272,13 +342,14 @@ CREATE TABLE `trx_pengeluaran_item` (
   `trx_total_pengeluaran_item` double(255,0) DEFAULT NULL,
   `trx_pengeluaran_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of trx_pengeluaran_item
 -- ----------------------------
 INSERT INTO `trx_pengeluaran_item` VALUES ('20', '11', 'Sapu Lantai', '6', '5000', '0', '30000', '33');
 INSERT INTO `trx_pengeluaran_item` VALUES ('21', '12', 'Sapu Lidi Gagang', '5', '5000', '0', '25000', '33');
+INSERT INTO `trx_pengeluaran_item` VALUES ('22', '14', 'Refill Kain Pel', '5', '5000', '0', '25000', '34');
 
 -- ----------------------------
 -- Table structure for trx_stock
@@ -295,7 +366,7 @@ CREATE TABLE `trx_stock` (
   `trx_stock_honor` double DEFAULT NULL,
   `trx_stock_type` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of trx_stock
@@ -304,3 +375,24 @@ INSERT INTO `trx_stock` VALUES ('2', '11', 'Sapu Lantai', '2015-08-31', '36', '2
 INSERT INTO `trx_stock` VALUES ('3', '12', 'Sapu Lidi Gagang', '2015-08-31', '12', '26', '5000', null, '1');
 INSERT INTO `trx_stock` VALUES ('4', '11', 'Sapu Lantai', '2015-09-01', '6', '20', '5000', '0', '2');
 INSERT INTO `trx_stock` VALUES ('5', '12', 'Sapu Lidi Gagang', '2015-09-01', '5', '20', '5000', '0', '2');
+INSERT INTO `trx_stock` VALUES ('6', '14', 'Refill Kain Pel', '2015-09-04', '26', '28', '5000', '0', '1');
+INSERT INTO `trx_stock` VALUES ('7', '14', 'Refill Kain Pel', '2015-09-04', '5', '22', '5000', '0', '2');
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `userid` int(255) NOT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `lastname` varchar(255) DEFAULT NULL,
+  `dob` varchar(255) DEFAULT NULL,
+  `ema` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES ('1', 'Daniel', 'Niko', '1986-01-02 00:00:00', null, 'daniel@updated.com');
